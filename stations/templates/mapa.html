@@ -1,0 +1,41 @@
+		<div class="map">
+			<div class="gMap"></div>
+
+			<div class="panel-map-info">
+				<header>
+					<h5>{{ est.name }}</h5>
+					<dl>
+						<dt>Última actualización:</dt>
+						<dd>{{ data.datetime }}</dd>
+					</dl>
+				</header>
+
+				<dl>
+					<dt>Temperatura:</dt>
+					<dd id="pmi-temperatura"><span>24</span>ºC</dd>
+
+					<dt>Humedad:</dt>
+					<dd id="pmi-humedad"><span>81</span>%</dd>
+
+					<dt>Punto de Rocío:</dt>
+					<dd id="pmi-rocio"><span>21</span>ºC</dd>
+
+					<dt>Viento:</dt>
+					<dd id="pmi-viento"><span>3</span>Km/h</dd>
+
+					<dt>Dirección del Viento:</dt>
+					<dd id="pmi-viento-direccion"><span>45</span>º</dd>
+
+					<dt>Lluvia:</dt>
+					<dd id="pmi-lluvia"><span>0</span>mm</dd>
+
+					<dt>Radiación Solar:</dt>
+					<dd id="pmi-radiacion"><span>0</span> W/m<sup>2</sup></dd>
+
+					<dt>Barómetro:</dt>
+					<dd id="pmi-barometro"><span>1008</span> mb+</dd>
+				</dl>
+
+				<a href="#" class="btn btn-primary btn-xs center-block">Resúmen de los datos</a>
+			</div><!-- panel-map-info end -->
+		</div><!-- map end -->

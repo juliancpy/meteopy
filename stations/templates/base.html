@@ -1,0 +1,30 @@
+{% include "header.html" %}
+
+  <body class="/">
+  	<div class="navbar-wrapper">
+  <div class="container pull-left">
+
+    <div class="navbar-header">
+      <a class="navbar-brand" href="/">{% block site_title %}Estaciones Meteorologicas.{% endblock %}</a>
+    </div><!-- navbar-header end -->
+
+    <div class="pull-right">
+    	<div class="brands">
+	    	<div>
+		  		<img src="/static/images/cruzroja.png" alt="cruz roja paraguay" />
+	    	</div>
+    	</div><!-- brands end -->
+    </div><!-- pull-right end -->
+
+  </div><!-- container end -->
+</div><!-- navbar-wrapper end -->
+
+  	<section class="container pull-left">
+  		<div class="row">
+
+{%  include "menu.html" %}
+{% block content%} <p>Hello World!</p>{% endblock %}
+
+
+
+{% include "footer.html" %}
