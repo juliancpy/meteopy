@@ -13,5 +13,5 @@ urlpatterns = patterns('',
     url(r'^admin/', include(admin.site.urls)),
     url(r'^$', 'stations.views.home', name='home'),
     url(r'^estacion/(\d+)$', 'stations.views.estacion_view', name='estacion'),
-    url(r'^chart/$', 'stations.views.temp_home_chart_view', name='temp_home_chart_view'),
+#    url(r'^chart/$', 'stations.views.temp_home_chart_view', name='temp_home_chart_view'),
 )

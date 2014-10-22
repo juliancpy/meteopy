@@ -21,9 +21,12 @@ class Station(models.Model):
     lat = models.FloatField()
     lg = models.FloatField()
 
+    def __unicode__(self):
+        return self.name
+
 
 class StationAdmin(admin.ModelAdmin):
-    list_display = ('name','zone','path_db','lat','lg')
+    list_display = ('id','name','zone','path_db','lat','lg')
     list_filter = ('zone', 'path_db')
 
 
@@ -93,6 +96,8 @@ class Data(models.Model):
     class Meta:
         ordering = ["datetime"]
 
+    def __unicode__(self):
+        return "%s " % self.datetime
 
 
 class DataAdmin(admin.ModelAdmin):
