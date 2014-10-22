@@ -46,7 +46,7 @@ Todo listo para trabajar con un proyecto de Django, en nuestro caso los archivos
 
 Como ya contamos con los archivos de nuestro proyecto en el repositorio [github](https://github.com/juliancpy/meteopy) simplemente realizamos una copia en nuestra maquina.
 Lo realizamos de la siguiente manera.
-	 	$ git clone git@github:YOUR_NICK_NAME/meteopy.git [Para mas detalles](https://code.djangoproject.com/wiki/CollaborateOnGithub)
+		<$ git clone git@github:YOUR_NICK_NAME/meteopy.git [Para mas detalles](https://code.djangoproject.com/wiki/CollaborateOnGithub)>
 
 Ahora que contamos con las fuentes relacionadas al proyecto tendremos que instalar las librerias especificas relacionadas al proyecto.
 Relacionadas a filtros en rango de fechas para el admin.
@@ -73,6 +73,5 @@ Si todo esta correcto bastara con ejecutar el siguiente comando y probar.
 
 ## Copyright and license
 
-Copyright (C) 2013-2014 bootstrap-select
+Copyright (C) 2013-2014 meteopy
 
-Licensed under [the MIT license](LICENSE).
