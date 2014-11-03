@@ -10773,6 +10773,7 @@ main > header.header-secondary {
 }
 .weather li .icon img {
   width: 40px;
+  height: 40px;
 }
 .weather li .min {
   text-align: center;

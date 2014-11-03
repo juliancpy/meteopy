@@ -9,7 +9,7 @@
 		<li class="separator">ESTACIONES</li>
         {% if stations %}
             {%  for station in stations %}
-                <li><a href="estacion/{{ station.id  }}">{{ station.name }}</a></li>
+                <li><a href="/estacion/{{ station.id  }}">{{ station.name }}</a></li>
             {% endfor %}
         {% else %}
 		    NO HAY ESTACIONES GUARDADAS ... Agrega!

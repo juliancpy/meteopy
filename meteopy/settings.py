@@ -37,7 +37,6 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'stations',
     'daterange_filter',
-    'chartit',
 )
 
 MIDDLEWARE_CLASSES = (

@@ -1,16 +1,10 @@
 {% extends "base.html" %}
 {% block content %}
-<script src="/static/js/jquery.js"></script>
-<script src="/static/js/highcharts.js"></script>
-<script src="/static/js/exporting.js"></script>
-{% load chartit %}
-    {{ temphomechart|load_charts:"temp-tab1" }}
-
 <main role="main">
     <header>
 	    <h2 class="page-title">
-		    <span>Encarnación</span>
-		    <small>Itapúa, Paraguay</small>
+		    <span>{{ last_data.station.name }}</span>
+		    <small>{{ last_data.station.get_departamento_display }}, Paraguay</small>
 	    </h2><!-- page-title end -->
     </header>
 
@@ -50,8 +44,8 @@
 
 				<div class="col-xs-6">
 					<div>
-						<small>MIN:</small> {{ last_data.outtemp_min }}º F &nbsp;-&nbsp; <i class="fa fa-clock-o"></i> {{ datadays.outtemp_min.datetime|date:'H:i' }} <br/>
-						<small>MAX:</small> {{ extra.outtemp_max.max_outtemp | floatformat:"1"}}º F &nbsp;-&nbsp; <i class="fa fa-clock-o"></i> {{ extra.outtemp_max.datetime|date:'H:i' }}
+						<small>MIN:</small> {{ extra.mint | floatformat:"1"}}º F &nbsp;-&nbsp; <i class="fa fa-clock-o"></i> {{ datadays.outtemp_min.datetime|date:'H:i' }} <br/>
+						<small>MAX:</small> {{ extra.maxt | floatformat:"1"}}º F &nbsp;-&nbsp; <i class="fa fa-clock-o"></i> {{ extra.outtemp_max.datetime|date:'H:i' }}
 					</div>
                         <br>
 				</div><!-- col end -->
@@ -94,13 +88,13 @@
 				</div><!-- col end -->
 
 				<div class="col-xs-2">
-					<div><h4>10.4º C</h4></div>
+					<div><h4>{{ last_data.windspeed }} mph</h4></div>
 				</div><!-- col end -->
 
 				<div class="col-xs-6">
 					<div>
-						<small>MAX:</small> 10.4º C &nbsp;-&nbsp; <i class="fa fa-clock-o"></i> 12:10hs. <br/>
-						<small>DIR:</small> ENE 68º C
+						<small>MAX:</small> {{ last_data.windspeed }} mph &nbsp;-&nbsp; <i class="fa fa-clock-o"></i> {{ last_data.datetime|date:'H:i' }} <br/>
+						<small>DIR:</small> {{ last_data.winddir }}º
 					</div>
 				</div><!-- col end -->
 
@@ -133,7 +127,7 @@
 		</div><!-- panel-report end -->
 	</div><!-- panel-body end -->
 </div><!-- panel-dark end -->
-			<div class="panel panel-dark">
+ <div class="panel panel-dark">
 	<div class="panel-body">
 		<div class="panel-report">
 			DIRECCIÓN DEL VIENTO
@@ -194,13 +188,13 @@
 				</div><!-- col end -->
 
 				<div class="col-xs-2">
-					<div><h4>0mm</h4></div>
+					<div><h4>{{ last_data.rain }}"</h4></div>
 				</div><!-- col end -->
 
 				<div class="col-xs-6">
 					<div>
-						<small>DÍA:</small> 0mm <br/>
-						<small>MES:</small> 0mm
+						<small>DÍA:</small>{{ last_data.rain }}" <br/>
+						<small>MES:</small> {{ last_data.rain }}"
 					</div>
 				</div><!-- col end -->
 
@@ -241,34 +235,33 @@
 				<div class="col-xs-3 inline-item">
 					Presión<br/>
 					<i class="ico flaticon-barometer2"></i>
-					998.5 hPa
+					{{ last_data.pressure | floatformat:"2" }}"
 				</div><!-- col end -->
 
 				<div class="col-xs-3 inline-item">
 					Humedad<br/>
 					<i class="flaticon-raindrops3"></i>
-					82%
+					{{ last_data.outhumidity }}%
 				</div><!-- col end -->
 
 				<div class="col-xs-3 inline-item">
-					Suelo<br/>
+					UV<br/>
 					<i class="flaticon-themometer"></i>
-					19.2ºC
+					{{ last_data.uv }}
 				</div><!-- col end -->
 
 				<div class="col-xs-3 inline-item">
 					Radiación<br/>
 					<i class="flaticon-sunset5"></i>
-					64 w/m<sup>2</sup>
+					{{ last_data.radiation }} w/m<sup>2</sup>
 				</div><!-- col end -->
-
 			</div><!-- row end -->
 		</div><!-- panel-report end -->
 	</div><!-- panel-body end -->
 </div><!-- panel-dark end -->
 
 
-		<div class="panel panel-dark">
+		<!--div class="panel panel-dark">
 			<div class="panel-body">
 
 				<div class="gallery-grid">
@@ -301,8 +294,8 @@
 					</a>
 				</div><!-- gallery-grid end -->
 
-			</div><!-- panel-body end -->
-		</div><!-- panel-dark end -->
+			<!--/div><!-- panel-body end -->
+		<!--/div><!-- panel-dark end -->
 
 
 	</div><!-- col end -->
@@ -315,242 +308,72 @@
 		<div class="panel panel-dark">
 	<div class="panel-body">
 		<header>
-			<big>Pronóstico para Encarnación</big><br/>
-			<small>Actualizado al 2014-09-23 16:54:58</small>
+			<center><small id="pronosDate"></small></center>
 		</header>
-
-		<ul class="weather">
+		<ul id="pronostico" style="display:none; text-align:center; width:100%;" class="weather">
 			<li class="header">
 				<small>FECHA</small>
 				<small>MIN</small>
 				<small>MAX</small>
 			</li>
+            {% for i in "123" %}
 			<li>
-				<span class="date">Mar. 23</span>
-				<span class="icon"><img src="http://www.meteorologia.gov.py/adm/imgtpo/lluviaytsra.gif" alt=""/></span>
-				<span class="min">22º</span>
-				<span class="max">30º</span>
+				<span id="cellDia{{ i }}" class="date"></span>
+				<span id="cellIcono{{ i }}" class="icon" ></span>
+                <span id="cellPronostico{{ i }}"></span>
+				<span id="cellMinima{{ i }}" class="min"></span>
+				<span id="cellMaxima{{ i }}" class="max"></span>
 			</li>
-			<li>
-				<span class="date">Mar. 24</span>
-				<span class="icon"><img src="http://www.meteorologia.gov.py/adm/imgtpo/lluviaytsra.gif" alt=""/></span>
-				<span class="min">18º</span>
-				<span class="max">26º</span>
-			</li>
-			<li>
-				<span class="date">Mar. 25</span>
-				<span class="icon"><img src="http://www.meteorologia.gov.py/adm/imgtpo/chaparronyocnltsra.gif" alt=""/></span>
-				<span class="min">17º</span>
-				<span class="max">27º</span>
-			</li>
-		</ul><!-- weather end -->
+            {% endfor %}
+		<p style="font-size:12px;text-align:right;color:blue;font-style:italic"> <a href="http://www.meteorologia.gov.py">Datos provistos por la DMH</a></p>
+        </ul><!-- weather end -->
+        <div id="climaContent" style="display:none;">
+            {{ pronos | safe }}
+        </div>
+
 	</div><!-- panel-body end -->
 </div><!-- panel-dark end -->
 
 
-		<div class="panel panel-dark">
+		<!--div class="panel panel-dark">
 			<div class="panel-body">
 				<div class="radar pad2">
 	        <img src="http://meteo.uni.edu.py/img/doppler/l10.jpg?1411560277684" class="img-responsive" >
     		</div><!-- radar end -->
 
-    		<div class="clearfix">
+    		<!--div class="clearfix">
 	    		<a href="#" class="btn btn-primary pull-right"><i class="fa fa-search"></i> Ampliar</a>
     		</div><!-- clearfix end -->
-			</div><!-- panel-body end -->
-		</div><!-- panel-dark end -->
+			<!--/div><!-- panel-body end -->
+		<!--/div><!-- panel-dark end -->
+
 
 		<div class="panel panel-dark">
 	<div class="panel-body">
 		<header class="pad1">
-			<big>Alertas Meteorológicas</big><br/>
-			<small>Actualizado al 2014-09-23 16:54:58</small>
+			<big>Precipitaciones Acumuladas del dia</big><br/>
+			<small>Fecha: {{ last_data.datetime |date:'d/m/Y' }}</small>
 		</header>
 
 		<ul class="block-scrollable">
-			<li class="row">
-				<div class="col-xs-8">
-					<strong>Estación 1</strong><br/>
-					<span>Professionally productize interactive experiences rather than prospective architectures.</span>
-				</div><!-- col end -->
-				<div class="col-xs-4 text-right">
-					<small>Mar. 12<br/>6:23 hs.</small>
-				</div><!-- col end -->
-			</li>
-
-			<li class="row">
-				<div class="col-xs-8">
-					<strong>Estación 2</strong><br/>
-					<span>Professionally productize interactive experiences rather than prospective architectures.</span>
-				</div><!-- col end -->
-				<div class="col-xs-4 text-right">
-					<small>Mar. 12<br/>6:23 hs.</small>
-				</div><!-- col end -->
-			</li>
-
-			<li class="row">
-				<div class="col-xs-8">
-					<strong>Estación 3</strong><br/>
-					<span>Professionally productize interactive experiences rather than prospective architectures.</span>
-				</div><!-- col end -->
-				<div class="col-xs-4 text-right">
-					<small>Mar. 12<br/>6:23 hs.</small>
-				</div><!-- col end -->
-			</li>
-
-			<li class="row">
-				<div class="col-xs-8">
-					<strong>Estación 4</strong><br/>
-					<span>Professionally productize interactive experiences rather than prospective architectures.</span>
-				</div><!-- col end -->
-				<div class="col-xs-4 text-right">
-					<small>Mar. 12<br/>6:23 hs.</small>
-				</div><!-- col end -->
-			</li>
-
-			<li class="row">
-				<div class="col-xs-8">
-					<strong>Estación 5</strong><br/>
-					<span>Professionally productize interactive experiences rather than prospective architectures.</span>
-				</div><!-- col end -->
-				<div class="col-xs-4 text-right">
-					<small>Mar. 12<br/>6:23 hs.</small>
-				</div><!-- col end -->
-			</li>
-
-			<li class="row">
-				<div class="col-xs-8">
-					<strong>Estación 6</strong><br/>
-					<span>Professionally productize interactive experiences rather than prospective architectures.</span>
-				</div><!-- col end -->
-				<div class="col-xs-4 text-right">
-					<small>Mar. 12<br/>6:23 hs.</small>
-				</div><!-- col end -->
-			</li>
-
-			<li class="row">
-				<div class="col-xs-8">
-					<strong>Estación 7</strong><br/>
-					<span>Professionally productize interactive experiences rather than prospective architectures.</span>
-				</div><!-- col end -->
-				<div class="col-xs-4 text-right">
-					<small>Mar. 12<br/>6:23 hs.</small>
-				</div><!-- col end -->
-			</li>
-
-			<li class="row">
-				<div class="col-xs-8">
-					<strong>Estación 8</strong><br/>
-					<span>Professionally productize interactive experiences rather than prospective architectures.</span>
-				</div><!-- col end -->
-				<div class="col-xs-4 text-right">
-					<small>Mar. 12<br/>6:23 hs.</small>
-				</div><!-- col end -->
-			</li>
-
-			<li class="row">
-				<div class="col-xs-8">
-					<strong>Estación 9</strong><br/>
-					<span>Professionally productize interactive experiences rather than prospective architectures.</span>
-				</div><!-- col end -->
-				<div class="col-xs-4 text-right">
-					<small>Mar. 12<br/>6:23 hs.</small>
-				</div><!-- col end -->
-			</li>
-
-			<li class="row">
-				<div class="col-xs-8">
-					<strong>Estación 10</strong><br/>
-					<span>Professionally productize interactive experiences rather than prospective architectures.</span>
-				</div><!-- col end -->
-				<div class="col-xs-4 text-right">
-					<small>Mar. 12<br/>6:23 hs.</small>
-				</div><!-- col end -->
-			</li>
-
-			<li class="row">
-				<div class="col-xs-8">
-					<strong>Estación 11</strong><br/>
-					<span>Professionally productize interactive experiences rather than prospective architectures.</span>
-				</div><!-- col end -->
-				<div class="col-xs-4 text-right">
-					<small>Mar. 12<br/>6:23 hs.</small>
-				</div><!-- col end -->
-			</li>
-		</ul><!-- block-scrollable end -->
-	</div><!-- panel-body end -->
-</div><!-- panel-dark end -->
-		<div class="panel panel-dark">
-	<div class="panel-body">
-		<header class="pad1">
-			<big>Precipitaciones Actuales</big><br/>
-			<small>Actualizado al 2014-09-23 16:54:58</small>
-		</header>
-
-		<ul class="block-scrollable">
+        {% if rain_day %}
+                {% for rain in rain_day %}
 			<li>
-				<strong>Estación 1</strong><br/>
-				<span>Precipitación 5mm</span>
-				<small> - Mar. 12 6:23 hs.</small>
+				<strong>{{ rain.station_name }}</strong><br/>
+				<span>Precipitación {{ rain.rain__sum }}"</span>
+				<small> - Actualizado a las {{ last_data.datetime |date:'H:i' }}.</small>
 			</li>
-
+                {% endfor %}
+        {% else %}
 			<li>
-				<strong>Estación 2</strong><br/>
-				<span>Precipitación 5mm</span>
-				<small> - Mar. 12 6:23 hs.</small>
+				<strong>No se registran datos.</strong><br/>
 			</li>
-
-			<li>
-				<strong>Estación 3</strong><br/>
-				<span>Precipitación 5mm</span>
-				<small> - Mar. 12 6:23 hs.</small>
-			</li>
-
-			<li>
-				<strong>Estación 4</strong><br/>
-				<span>Precipitación 5mm</span>
-				<small> - Mar. 12 6:23 hs.</small>
-			</li>
-
-			<li>
-				<strong>Estación 5</strong><br/>
-				<span>Precipitación 5mm</span>
-				<small> - Mar. 12 6:23 hs.</small>
-			</li>
-
-			<li>
-				<strong>Estación 6</strong><br/>
-				<span>Precipitación 5mm</span>
-				<small> - Mar. 12 6:23 hs.</small>
-			</li>
-
-			<li>
-				<strong>Estación 7</strong><br/>
-				<span>Precipitación 5mm</span>
-				<small> - Mar. 12 6:23 hs.</small>
-			</li>
-
-			<li>
-				<strong>Estación 8</strong><br/>
-				<span>Precipitación 5mm</span>
-				<small> - Mar. 12 6:23 hs.</small>
-			</li>
-
-			<li>
-				<strong>Estación 9</strong><br/>
-				<span>Precipitación 5mm</span>
-				<small> - Mar. 12 6:23 hs.</small>
-			</li>
-
-			<li>
-				<strong>Estación 10</strong><br/>
-				<span>Precipitación 5mm</span>
-				<small> - Mar. 12 6:23 hs.</small>
-			</li>
+        {% endif %}
 		</ul><!-- block-scrollable end -->
 	</div><!-- panel-body end -->
 </div><!-- panel-dark end -->
 </div><!-- col end -->
+
 {% endblock %}
 
 

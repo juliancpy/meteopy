@@ -1,3 +1,4 @@
+# coding=utf-8
 # This is an auto-generated Django model module.
 # You'll have to do the following manually to clean this up:
 #   * Rearrange models' order
@@ -15,9 +16,11 @@ from django.db.models import Min, Sum
 
 
 class Station(models.Model):
+    DEPTOS = ((1, 'Concepcion'), (2, 'San Pedro'),(3, 'Coridillera'),(4, 'Guairá'),(5, 'Caaguazú'),(6, 'Caazapa'),(7, 'Itapúa'),
+              (8, 'Misiones'),(9, 'Paraguarí'),(10, 'Alto Parana'),(11, 'Central'),(12, 'Neembucu'),(13, 'Amambay'),(14, 'Canindeyú'),(15, 'Presidente Hayes'),(16, 'Alto Paraguay'),(17, 'Boqueron'),)
     name = models.CharField(max_length=255)
     path_db = models.CharField(max_length=255)
-    zone = models.CharField(max_length=255)
+    departamento = models.IntegerField(unique=True, choices=DEPTOS, default=0)
     lat = models.FloatField()
     lg = models.FloatField()
 
@@ -26,8 +29,8 @@ class Station(models.Model):
 
 
 class StationAdmin(admin.ModelAdmin):
-    list_display = ('id','name','zone','path_db','lat','lg')
-    list_filter = ('zone', 'path_db')
+    list_display = ('id','name','departamento','path_db','lat','lg')
+    list_filter = ('departamento', 'path_db')
 
 
 
@@ -87,11 +90,6 @@ class Data(models.Model):
     intempbatterystatus = models.FloatField(db_column='inTempBatteryStatus', blank=True, null=True)  # Field name made lowercase.
     station_name = models.CharField(max_length=255)
     station = models.ForeignKey(Station)
-    @property
-    def outtemp_min(self):
-        outtemp_min = {}
-        outtemp_min = self.values('datetime').annotate(min_outtemp = Min('outtemp')).order_by('min_outtemp')[0]
-        return 'outtemp'
 
     class Meta:
         ordering = ["datetime"]
@@ -99,9 +97,17 @@ class Data(models.Model):
     def __unicode__(self):
         return "%s " % self.datetime
 
+    @property
+    def outtemp_min(self):
+        min = self.values('datetime', 'outtemp').annotate(min_outtemp = Min('outtemp')).order_by('min_outtemp')[0]
+        outtemp = {'min': min.min_outtemp, 'date': min.datetime}
+
+        return outtemp
+
+
 
 class DataAdmin(admin.ModelAdmin):
-    list_display = ('station_name','datetime','outtemp','outhumidity','rain','windspeed')
+    list_display = ('station_name','station', 'datetime','outtemp','outhumidity','rain','windspeed')
     list_filter = (
         'station_name', 
         ('datetime', DateRangeFilter),
