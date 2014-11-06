@@ -27,11 +27,21 @@ class Station(models.Model):
     def __unicode__(self):
         return self.name
 
-
 class StationAdmin(admin.ModelAdmin):
     list_display = ('id','name','departamento','path_db','lat','lg')
     list_filter = ('departamento', 'path_db')
 
+
+class Link(models.Model):
+    title = models.CharField(max_length=255)
+    link = models.URLField(max_length=255)
+    help = models.CharField(max_length=255)
+    def __unicode__(self):
+        return self.title
+
+class LinkAdmin(admin.ModelAdmin):
+    list_display = ('id','title','link', 'help')
+    list_filter = ('title','id')
 
 
 
@@ -90,19 +100,64 @@ class Data(models.Model):
     intempbatterystatus = models.FloatField(db_column='inTempBatteryStatus', blank=True, null=True)  # Field name made lowercase.
     station_name = models.CharField(max_length=255)
     station = models.ForeignKey(Station)
+    @property
+    def outtemp_celsius(self):
+        temp = self.outtemp
+        new_temp=(temp-32)*5/9
+        return new_temp
+    def windspeed_kmh(self):
+        speed = self.windspeed * 1.609
+        return speed
+    def rain_mm(self):
+        rain = self.rain / 0.039370
+        return rain
+
+    def pressure_hpa(self):
+        pressure = self.pressure * 33.86
+        return pressure
 
     class Meta:
         ordering = ["datetime"]
 
     def __unicode__(self):
         return "%s " % self.datetime
+    def get_wdir(self):
+        dir = self.winddir
+        direction=""
+        if dir >= 11.25 and dir < 33.75:
+            direction="NNE"
+        elif dir >=33.75 and dir < 56.25:
+            direction="NE"
+        elif dir >=56.25 and dir < 78.75:
+            direction="ENE"
+        elif dir >=78.25 and dir < 101.25:
+            direction="Este"
+        elif dir >=101.25 and dir < 123.75:
+            direction="ESE"
+        elif dir >=123.75 and dir < 146.25:
+            direction="SE"
+        elif dir >=146.25 and dir < 168.75:
+            direction="SSE"
+        elif dir >=168.75 and dir < 191.25:
+            direction="S"
+        elif dir >=191.25 and dir < 213.75:
+            direction="S"
+        elif dir >=213.75 and dir < 236.25:
+            direction="SSW"
+        elif dir >=236.25 and dir < 258.75:
+            direction="WSW"
+        elif dir >=258.75 and dir < 281.25:
+            direction="W"
+        elif dir >=281.25 and dir < 303.75:
+            direction="WNW"
+        elif dir >=303.75 and dir < 326.25:
+            direction="NW"
+        elif dir >=326.25 and dir < 348.75:
+            direction="NNW"
+        else:
+            direction="N"
+        return "%s " % direction
 
-    @property
-    def outtemp_min(self):
-        min = self.values('datetime', 'outtemp').annotate(min_outtemp = Min('outtemp')).order_by('min_outtemp')[0]
-        outtemp = {'min': min.min_outtemp, 'date': min.datetime}
-
-        return outtemp
 
 
 

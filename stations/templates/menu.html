@@ -23,11 +23,12 @@
 	</ul>
 
 	<ul class="nav">
-		<li class="separator">LINKS</li>
-		<li><a href="#">Cruz Roja</a></li>
-		<li><a href="#">Dinar</a></li>
-		<li><a href="#">Comité Internacional<br/>Cruz Roja</a></li>
-		<li><a href="#">Federación Internacional</a></li>
+		<li class="separator">Enlaces Amigas</li>
+        {% if links %}
+            {% for link in links %}
+		        <li><a href="{{ link.link }}" target="_blank" title="{{ link.help }}">{{ link.title }}</a></li>
+            {% endfor %}
+        {% endif %}
 	</ul>
 
 </div><!-- aside-container -->

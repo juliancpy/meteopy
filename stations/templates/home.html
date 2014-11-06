@@ -39,13 +39,13 @@
 				</div><!-- col end -->
 
 				<div class="col-xs-2">
-					<div><h4>{{ last_data.outtemp | floatformat:"1" }}º F</h4></div>
+					<div><h4>{{ last_data.outtemp_celsius | floatformat:"1" }}º C</h4></div>
 				</div><!-- col end -->
 
 				<div class="col-xs-6">
 					<div>
-						<small>MIN:</small> {{ extra.mint | floatformat:"1"}}º F &nbsp;-&nbsp; <i class="fa fa-clock-o"></i> {{ datadays.outtemp_min.datetime|date:'H:i' }} <br/>
-						<small>MAX:</small> {{ extra.maxt | floatformat:"1"}}º F &nbsp;-&nbsp; <i class="fa fa-clock-o"></i> {{ extra.outtemp_max.datetime|date:'H:i' }}
+						<small>MIN:</small> {{ extra.outtemp_min.val | floatformat:"1"}} ºC &nbsp;-&nbsp; <i class="fa fa-clock-o"></i> {{ extra.outtemp_min.datetime|date:'H:i' }} <br/>
+						<small>MAX:</small> {{ extra.outtemp_max.val | floatformat:"1"}} ºC &nbsp;-&nbsp; <i class="fa fa-clock-o"></i> {{ extra.outtemp_max.datetime|date:'H:i' }}
 					</div>
                         <br>
 				</div><!-- col end -->
@@ -88,12 +88,12 @@
 				</div><!-- col end -->
 
 				<div class="col-xs-2">
-					<div><h4>{{ last_data.windspeed }} mph</h4></div>
+					<div><h4>{{ last_data.windspeed_kmh | floatformat:"1"}} kmph</h4></div>
 				</div><!-- col end -->
 
 				<div class="col-xs-6">
 					<div>
-						<small>MAX:</small> {{ last_data.windspeed }} mph &nbsp;-&nbsp; <i class="fa fa-clock-o"></i> {{ last_data.datetime|date:'H:i' }} <br/>
+						<small>MAX:</small> {{ extra.windspeed_max.val | floatformat:"1"}} kmph &nbsp;-&nbsp; <i class="fa fa-clock-o"></i> {{ extra.windspeed_max.datetime|date:'H:i' }} <br/>
 						<small>DIR:</small> {{ last_data.winddir }}º
 					</div>
 				</div><!-- col end -->
@@ -138,14 +138,17 @@
 				</div><!-- col end -->
 
 				<div class="col-xs-2">
-					<div><h4>ENE</h4></div>
+					<div><h4>{{  last_data.get_wdir  }}</h4>
+                        <small>{{ last_data.winddir }}º </small>
+                    </div>
+
 				</div><!-- col end -->
 
 				<div class="col-xs-6">
-					<div>
-						<small>PREDOMINANTE DEL DÍA:</small> ENE <br/>
+					<!--div>
+						<small>PREDOMINANTE DEL DÍA:</small> {{ last_data.get_wdir }} <br/>
 						<small>LECTURAS:</small> 11762 veces
-					</div>
+					</div-->
 				</div><!-- col end -->
 
 				<div class="col-xs-2">
@@ -188,12 +191,12 @@
 				</div><!-- col end -->
 
 				<div class="col-xs-2">
-					<div><h4>{{ last_data.rain }}"</h4></div>
+					<div><h4>{{ last_data.rain_mm | floatformat:"1"}}mm</h4></div>
 				</div><!-- col end -->
 
 				<div class="col-xs-6">
 					<div>
-						<small>DÍA:</small>{{ last_data.rain }}" <br/>
+						<small>DÍA:</small>{{ extra.rain_day_acum }}" <br/>
 						<small>MES:</small> {{ last_data.rain }}"
 					</div>
 				</div><!-- col end -->
@@ -235,7 +238,7 @@
 				<div class="col-xs-3 inline-item">
 					Presión<br/>
 					<i class="ico flaticon-barometer2"></i>
-					{{ last_data.pressure | floatformat:"2" }}"
+					{{ last_data.pressure_hpa | floatformat:"2" }}hpa
 				</div><!-- col end -->
 
 				<div class="col-xs-3 inline-item">
@@ -372,10 +375,13 @@
 		</ul><!-- block-scrollable end -->
 	</div><!-- panel-body end -->
 </div><!-- panel-dark end -->
+	<div class="panel panel-dark">
+	<div class="panel-body">
+        <a class="twitter-timeline" href="https://twitter.com/pronosticos_dmh" data-widget-id="529283381280772096">Tweets by @pronosticos_dmh</a>
+        <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+    </div>
+    </div>
 </div><!-- col end -->
 
 {% endblock %}
-
-
-
 
