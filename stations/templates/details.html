@@ -1,0 +1,174 @@
+{% extends "base.html" %}
+{% block content %}
+<main role="main">
+
+<header class="header-secondary">
+	<h2 class="page-title">Resúmenes de los datos</h2>
+</header><!-- header-secondary end -->
+
+
+
+<div class="row">
+
+	<div class="col-xs-12 pad2" style="z-index:15">
+		<form action="" class="panel panel-dark form-horizontal">
+			<div class="panel-body">
+
+				<label class="col-xs-3 text-right">Seleccione Estación</label>
+
+				<div class="col-xs-4">
+					<select class="form-control" id="select-station" onChange='location = this.options[this.selectedIndex].value;'>
+                        <option>Elija Estación</option>
+
+                        {% if stations %}
+                            {%  for station in stations %}
+                                {% if station.id == id %}
+                                    <option value="{% url 'detalles' %}{{ station.id }}/" selected="selected">{{ station.name }}</option>
+                                {% else %}
+                                    <option value="{% url 'detalles' %}{{ station.id }}/">{{ station.name }}</option>
+                                {% endif %}
+                            {% endfor %}
+                        {% else %}
+                            NO HAY ESTACIONES GUARDADAS ... Agrega!
+                        {% endif %}
+					</select>
+				</div><!-- col end -->
+
+			</div><!-- panel-body end -->
+		</form>
+	</div><!-- col end -->
+
+
+
+	<div class="col-xs-12">
+
+		<table class="table">
+			<thead>
+				<tr>
+					<th colspan="2"><div>Estación</div></th>
+				</tr>
+			</thead>
+
+			<tbody>
+				<tr>
+					<td><div><i class="ico station ico-left"></i> Estación</div></td>
+					<td><div>{{ data.station.name }}</div></td>
+				</tr>
+
+				<tr>
+					<td><div><i class="ico latitud ico-left"></i> Latitud</div></td>
+					<td><div>{{ data.station.lat }}</div></td>
+				</tr>
+
+				<tr>
+					<td><div><i class="ico longitud ico-left"></i> Longitud</div></td>
+					<td><div>{{ data.station.lg }}</div></td>
+				</tr>
+			</tbody>
+		</table>
+
+
+		<table class="table">
+			<thead>
+				<tr>
+					<th colspan="2"><div>Datos última observación: {{ data.datetime }}</div></th>
+				</tr>
+			</thead>
+
+			<tbody>
+				<tr>
+					<td><div><i class="ico temperatura ico-left"></i> Temperatura</div></td>
+					<td><div>{{ data.outtemp_celsius | floatformat:"2" }}ºC</div></td>
+				</tr>
+
+				<tr>
+					<td><div><i class="ico rocio ico-left"></i> Punto de Rócio</div></td>
+					<td><div>Falta Calculo</div></td>
+				</tr>
+
+				<tr>
+					<td><div><i class="ico humedad ico-left"></i> Humedad</div></td>
+					<td><div>{{ data.outhumidity }}%</div></td>
+				</tr>
+
+				<tr>
+					<td><div><i class="ico viento ico-left"></i> Viento</div></td>
+					<td><div>{{ data.windspeed_kmh|floatformat:"2" }} Km/h</div></td>
+				</tr>
+
+				<tr>
+					<td><div><i class="ico viento-direccion ico-left"></i> Dirección del viento</div></td>
+					<td><div>{{ data.get_wdir }}</div></td>
+				</tr>
+
+				<tr>
+					<td><div><i class="ico lluvia ico-left"></i> Lluvia</div></td>
+					<td><div>{{ data.rain_mm | floatformat:"1" }} mm</div></td>
+				</tr>
+
+				<tr>
+					<td><div><i class="ico radiacion ico-left"></i> Radiación solar</div></td>
+					<td><div>{{ data.radiation }} W/m<sup>2</sup></div></td>
+				</tr>
+
+				<tr>
+					<td><div><i class="ico barometro ico-left"></i> Barometro</div></td>
+					<td><div>{{ data.pressure_hpa | floatformat:"2" }}hpa</div></td>
+				</tr>
+			</tbody>
+		</table>
+
+
+
+		<table class="table">
+			<thead>
+				<tr>
+					<th colspan="2"><div>Datos de hoy {{ data.datetime |date:'d/m/Y' }} 00:00 –{{ data.datetime |date:'H:m' }}</div></th>
+					<th><div>Hora</div></th>
+				</tr>
+			</thead>
+
+			<tbody>
+				<tr>
+					<td><div><i class="ico temperatura-max ico-left"></i> Temperatura Máxima</div></td>
+					<td><div>{{ extra.outtemp_max.val|floatformat:"2" }} ºC</div></td>
+					<td><div>{{ extra.outtemp_max.datetime | date:"H:m" }}</div></td>
+				</tr>
+
+				<tr>
+					<td><div><i class="ico temperatura-min ico-left"></i> Temperatura Mínima</div></td>
+					<td><div>{{ extra.outtemp_min.val| floatformat:"2" }} ºC</div></td>
+					<td><div>{{ extra.outtemp_min.datetime|date:"H:m" }}</div></td>
+				</tr>
+
+				<tr>
+					<td><div><i class="ico precipitacion ico-left"></i> Precipitación acumulada</div></td>
+					<td><div>0 mm</div></td>
+					<td><div>00:00 – {{ data.datetime|date:"H:m" }}</div></td>
+				</tr>
+
+				<tr>
+					<td><div><i class="ico humedad-max ico-left"></i> Humedad máxima</div></td>
+					<td><div>{{ extra.humidity_max.val }}%</div></td>
+					<td><div>{{ extra.humidity_max.datetime|date:"H:m" }}</div></td>
+				</tr>
+
+				<tr>
+					<td><div><i class="ico humedad-min ico-left"></i> Humedad mínima</div></td>
+					<td><div>{{ extra.humidity_min.val }}%</div></td>
+					<td><div>{{ extra.humidity_min.datetime|date:"H:m" }} </div></td>
+				</tr>
+				<tr>
+					<td><div><i class="ico viento-max ico-left"></i> Viento Máximo</div></td>
+					<td><div>{{ extra.windspeed_max.val |floatformat:"2" }}kmph</div></td>
+					<td><div>{{ extra.windspeed_max.datetime | date:"H:m" }}</div></td>
+				</tr>
+			</tbody>
+		</table>
+
+
+	</div><!-- col end -->
+
+
+
+{% endblock %}

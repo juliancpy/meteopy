@@ -44,15 +44,15 @@
 
 				<div class="col-xs-6">
 					<div>
-						<small>MIN:</small> {{ extra.outtemp_min.val | floatformat:"1"}} ºC &nbsp;-&nbsp; <i class="fa fa-clock-o"></i> {{ extra.outtemp_min.datetime|date:'H:i' }} <br/>
-						<small>MAX:</small> {{ extra.outtemp_max.val | floatformat:"1"}} ºC &nbsp;-&nbsp; <i class="fa fa-clock-o"></i> {{ extra.outtemp_max.datetime|date:'H:i' }}
+						<small>MIN:</small> {{ extra.outtemp_min.outtemp_celsius | floatformat:"1"}} ºC &nbsp;-&nbsp; <i class="fa fa-clock-o"></i> {{ extra.outtemp_min.datetime|date:'H:i' }} <br/>
+						<small>MAX:</small> {{ extra.outtemp_max.outtemp_celsius | floatformat:"1"}} ºC &nbsp;-&nbsp; <i class="fa fa-clock-o"></i> {{ extra.outtemp_max.datetime|date:'H:i' }}
 					</div>
                         <br>
 				</div><!-- col end -->
 
 				<div class="col-xs-2">
 					<div>
-						<a href="#collapse-temperature" data-toggle="collapse" data-parent="#accordion" class="btn btn-primary collapsed pull-right">+</a>
+						<a href="#collapse-temperature" id="btnGrafTemp" data-toggle="collapse" data-parent="#accordion" class="btn btn-primary collapsed pull-right">+</a>
 					</div>
 				</div><!-- col end -->
 			</div><!-- row end -->
@@ -65,7 +65,7 @@
 		    </ul>
 
 				<div class="tab-content">
-				  <div id="temp-tab1" class="tab-pane fade in active"   style="min-width: 521px; height: 400px; margin: 0 auto">
+				  <div id="temp-tab1" class="tab-pane fade in active" style="min-width: 521px; height: 400px; margin: 0 auto">
 
 				  </div><!-- tab-pane end -->
 				  <div class="tab-pane fade" id="temp-tab2" style="height: 400px; margin: auto; min-width: 511px; max-width: 521px">
@@ -93,14 +93,14 @@
 
 				<div class="col-xs-6">
 					<div>
-						<small>MAX:</small> {{ extra.windspeed_max.val | floatformat:"1"}} kmph &nbsp;-&nbsp; <i class="fa fa-clock-o"></i> {{ extra.windspeed_max.datetime|date:'H:i' }} <br/>
+						<small>MAX:</small> {{ extra.windspeed_max.windspeed_kmh | floatformat:"1"}} kmph &nbsp;-&nbsp; <i class="fa fa-clock-o"></i> {{ extra.windspeed_max.datetime|date:'H:i' }} <br/>
 						<small>DIR:</small> {{ last_data.winddir }}º
 					</div>
 				</div><!-- col end -->
 
 				<div class="col-xs-2">
 					<div>
-						<a href="#collapse-wind-speed" data-toggle="collapse" data-parent="#accordion" class="btn btn-primary collapsed pull-right">+</a>
+						<a href="#collapse-wind-speed" id="btnGrafVientoVel" data-toggle="collapse" data-parent="#accordion" class="btn btn-primary collapsed pull-right">+</a>
 					</div>
 				</div><!-- col end -->
 			</div><!-- row end -->
@@ -114,8 +114,8 @@
 		    </ul>
 
 				<div class="tab-content">
-				  <div class="tab-pane fade in active" id="wind-speed-tab1">
-					  hola
+				  <div class="tab-pane fade in active" id="wind-speed-tab1" style="min-width: 521px; height: 400px; margin: 0 auto">
+
 				  </div><!-- tab-pane end -->
 				  <div class="tab-pane fade" id="wind-speed-tab2">
 					  Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et.
@@ -153,7 +153,7 @@
 
 				<div class="col-xs-2">
 					<div>
-						<a href="#collapse-winddir" data-toggle="collapse" data-parent="#accordion" class="btn btn-primary collapsed pull-right">+</a>
+						<a href="#collapse-winddir" id="btnGrafVientoDir" data-toggle="collapse" data-parent="#accordion" class="btn btn-primary collapsed pull-right">+</a>
 					</div>
 				</div><!-- col end -->
 			</div><!-- row end -->
@@ -167,8 +167,8 @@
 		    </ul>
 
 				<div class="tab-content">
-				  <div class="tab-pane fade in active" id="winddir-tab1">
-					  Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
+				  <div class="tab-pane fade in active" id="winddir-tab1" style="min-width: 521px; height: 400px; margin: 0 auto">
+
 				  </div><!-- tab-pane end -->
 				  <div class="tab-pane fade" id="winddir-tab2">
 					  Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et.
@@ -196,14 +196,14 @@
 
 				<div class="col-xs-6">
 					<div>
-						<small>DÍA:</small>{{ extra.rain_day_acum }}" <br/>
+						<small>DÍA:</small>{{ extra.rain_day_acum | floatformat:"1" }}mm <br/>
 						<small>MES:</small> {{ last_data.rain }}"
 					</div>
 				</div><!-- col end -->
 
 				<div class="col-xs-2">
 					<div>
-						<a href="#collapse-rainfall" data-toggle="collapse" data-parent="#accordion" class="btn btn-primary collapsed pull-right">+</a>
+						<a href="#collapse-rainfall" id="btnGrafPrecipitaciones" data-toggle="collapse" data-parent="#accordion" class="btn btn-primary collapsed pull-right">+</a>
 					</div>
 				</div><!-- col end -->
 			</div><!-- row end -->
@@ -216,8 +216,8 @@
 		    </ul>
 
 				<div class="tab-content">
-				  <div class="tab-pane fade in active" id="rainfall-tab1">
-					  Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
+				  <div class="tab-pane fade in active" id="rainfall-tab1" style="min-width: 521px; height: 400px; margin: 0 auto">
+
 				  </div><!-- tab-pane end -->
 				</div><!-- tab-content end -->
 			</div><!-- panel-collapse end -->
@@ -237,7 +237,7 @@
 
 				<div class="col-xs-3 inline-item">
 					Presión<br/>
-					<i class="ico flaticon-barometer2"></i>
+					<i class="flaticon-barometer2"></i>
 					{{ last_data.pressure_hpa | floatformat:"2" }}hpa
 				</div><!-- col end -->
 
@@ -360,7 +360,7 @@
 
 		<ul class="block-scrollable">
         {% if rain_day %}
-                {% for rain in rain_day %}
+                {% for rain in rain_day_acum %}
 			<li>
 				<strong>{{ rain.station_name }}</strong><br/>
 				<span>Precipitación {{ rain.rain__sum }}"</span>

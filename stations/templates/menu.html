@@ -1,11 +1,6 @@
 <aside><div class="aside-container">
 
 	<ul class="nav">
-		<li class="separator">PAGINAS INTERNAS</li>
-		<li><a href="/pagina2">Página #2</a></li>
-	</ul>
-
-	<ul class="nav">
 		<li class="separator">ESTACIONES</li>
         {% if stations %}
             {%  for station in stations %}
@@ -19,11 +14,11 @@
 	<ul class="nav">
 		<li class="separator">SECCIONES</li>
 		<li><a href="#">Reportes & Consultas</a></li>
-		<li><a href="#">Datos Generales</a></li>
+		<li><a href="/detalles">Datos Generales</a></li>
 	</ul>
 
 	<ul class="nav">
-		<li class="separator">Enlaces Amigas</li>
+		<li class="separator">Enlaces De Interes</li>
         {% if links %}
             {% for link in links %}
 		        <li><a href="{{ link.link }}" target="_blank" title="{{ link.help }}">{{ link.title }}</a></li>
