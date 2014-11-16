@@ -62,14 +62,17 @@ def home(request, id_estacion=1):
 
         # dirMaxVelVientoDia = Data.objects.filter(station=sttn, datetime__year=data.datetime.year, datetime__month=data.datetime.month,
         #                                          datetime__day=data.datetime.day, windspeed=maxVelVientoDia).order_by('-datetime')[0].winddir
-        dataMaxVelVientoDia = Data.objects.filter(station=sttn, datetime__year=data.datetime.year, datetime__month=data.datetime.month,
+        try:
+            dataMaxVelVientoDia = Data.objects.filter(station=sttn, datetime__year=data.datetime.year, datetime__month=data.datetime.month,
                                                  datetime__day=data.datetime.day, windspeed=maxVelVientoDia).order_by('-datetime')[0]
-
-        dataMinTempDia = Data.objects.filter(station=sttn, datetime__year=data.datetime.year, datetime__month=data.datetime.month,
+            dataMinTempDia = Data.objects.filter(station=sttn, datetime__year=data.datetime.year, datetime__month=data.datetime.month,
                                                  datetime__day=data.datetime.day, outtemp=minTempDia).order_by('-datetime')[0]
-
-        dataMaxTempDia = Data.objects.filter(station=sttn, datetime__year=data.datetime.year, datetime__month=data.datetime.month,
+            dataMaxTempDia = Data.objects.filter(station=sttn, datetime__year=data.datetime.year, datetime__month=data.datetime.month,
                                                  datetime__day=data.datetime.day, outtemp=maxTempDia).order_by('-datetime')[0]
+        except IndexError:
+            dataMaxTempDia = None
+            dataMinTempDia = None
+            dataMaxVelVientoDia = None
 
 
         url ='http://www.meteorologia.gov.py/interior.php?depto=' + str(data.station.departamento)
