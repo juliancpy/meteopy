@@ -96,11 +96,11 @@ def home(request, id_estacion=1):
         encoding = params.get('charset', 'iso-8859-1')
         unicode_text = r.read().decode(encoding)
 
-        desde = datetime.strptime('2012-01-31', '%Y-%m-%d')
-        desde = desde.replace(hour=00, minute=01)
-
-        hasta = datetime.strptime('2012-02-01', '%Y-%m-%d')
-        hasta = hasta.replace(hour=23, minute=59)
+        # desde = datetime.strptime('2012-01-31', '%Y-%m-%d')
+        # desde = desde.replace(hour=00, minute=01)
+        #
+        # hasta = datetime.strptime('2012-02-01', '%Y-%m-%d')
+        # hasta = hasta.replace(hour=23, minute=59)
 
         #http://stackoverflow.com/questions/2278076/count-number-of-records-by-date-in-django/2283913#2283913
         #lluvia = Data.objects.filter(datetime__gt = desde, datetime__lt = hasta).extra({'date_rain' : "date(datetime)"}).values('date_rain').annotate(rain_sum=Sum('rain')).order_by()
@@ -353,7 +353,7 @@ def precipitacion_acumulado_dia(request, id_estacion = 1):
     valores = []
 
     for d in datos:
-        dato_fecha = datetime.strptime(d['date_rain'], '%Y-%m-%d')
+        dato_fecha = datetime.strptime(d['date_rain'].isoformat(), '%Y-%m-%d')
         dias.append(dato_fecha.strftime('%b %d'))
         valores.append(d['rain_sum'])
 
