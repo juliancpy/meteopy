@@ -318,7 +318,7 @@ var HomeCharts = {
 
 HomeCharts.inicializar = function()
 {
-    HomeCharts._fechaInicio = Util.getFechaActualResta(10);
+    HomeCharts._fechaInicio = Util.getFechaActualResta(15);
     HomeCharts._fechaFin =  Util.getFechaActual();
     HomeCharts._fechaDiezDiasFin = Util.getFechaActualResta(10);
 };
@@ -423,9 +423,9 @@ Dashboard.inicializar = function()
     Dashboard._idEstacion = 1;
     Dashboard.temperaturaTabListener();
 
-     HomeCharts._fechaFin = '2014-11-14';
-     HomeCharts._fechaInicio = '2014-11-25';
-     HomeCharts._fechaDiezDiasFin = '2014-11-22';
+     //HomeCharts._fechaFin = '2014-11-14';
+     //HomeCharts._fechaInicio = '2014-11-25';
+     //HomeCharts._fechaDiezDiasFin = '2014-11-22';
 };
 
 Dashboard.temperaturaTabListener = function()
