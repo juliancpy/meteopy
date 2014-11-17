@@ -78,12 +78,17 @@ def home(request, id_estacion=1):
 
         # dirMaxVelVientoDia = Data.objects.filter(station=sttn, datetime__year=data.datetime.year, datetime__month=data.datetime.month,
         #                                          datetime__day=data.datetime.day, windspeed=maxVelVientoDia).order_by('-datetime')[0].winddir
-        dataMaxVelVientoDia = Data.objects.filter(station=sttn, datetime__range=(dia_hora_min, dia_hora_max), windspeed=maxVelVientoDia).order_by('-datetime')[0]
 
-        dataMinTempDia = Data.objects.filter(station=sttn, datetime__range=(dia_hora_min, dia_hora_max), outtemp=minTempDia).order_by('-datetime')[0]
+        try:
+            dataMaxVelVientoDia = Data.objects.filter(station=sttn, datetime__range=(dia_hora_min, dia_hora_max), windspeed=maxVelVientoDia).order_by('-datetime')[0]
 
-        dataMaxTempDia = Data.objects.filter(station=sttn, datetime__range=(dia_hora_min, dia_hora_max), outtemp=maxTempDia).order_by('-datetime')[0]
+            dataMinTempDia = Data.objects.filter(station=sttn, datetime__range=(dia_hora_min, dia_hora_max), outtemp=minTempDia).order_by('-datetime')[0]
 
+            dataMaxTempDia = Data.objects.filter(station=sttn, datetime__range=(dia_hora_min, dia_hora_max), outtemp=maxTempDia).order_by('-datetime')[0]
+        except IndexError:
+            dataMaxTempDia = None
+            dataMinTempDia = None
+            dataMaxVelVientoDia = None
 
         url ='http://www.meteorologia.gov.py/interior.php?depto=' + str(data.station.departamento)
         r = urllib2.urlopen(url)
@@ -182,7 +187,7 @@ def temperatura_historico(request, id_estacion = 1):
     desde = desde.replace(hour=00, minute=01)
     pprint.pprint(desde)
 
-    fechaHastaDefault = datetime.today() - timedelta(days=30)
+    fechaHastaDefault = datetime.today() - timedelta(days=10)
     hasta = request.GET.get('hasta', fechaHastaDefault.strftime("%Y-%m-%d"))
     hasta = datetime.strptime(hasta, '%Y-%m-%d')
     hasta = hasta.replace(hour=23, minute=59)
@@ -228,7 +233,7 @@ def viento_historico(request, id_estacion = 1):
     desde = desde.replace(hour=00, minute=01)
     pprint.pprint(desde)
 
-    fechaHastaDefault = datetime.today() - timedelta(days=30)
+    fechaHastaDefault = datetime.today() - timedelta(days=10)
     hasta = request.GET.get('hasta', fechaHastaDefault.strftime("%Y-%m-%d"))
     hasta = datetime.strptime(hasta, '%Y-%m-%d')
     hasta = hasta.replace(hour=23, minute=59)
@@ -264,7 +269,7 @@ def viento_direccion_historico(request, id_estacion = 1):
     desde = desde.replace(hour=00, minute=01)
     pprint.pprint(desde)
 
-    fechaHastaDefault = datetime.today() - timedelta(days=30)
+    fechaHastaDefault = datetime.today() - timedelta(days=10)
     hasta = request.GET.get('hasta', fechaHastaDefault.strftime("%Y-%m-%d"))
     hasta = datetime.strptime(hasta, '%Y-%m-%d')
     hasta = hasta.replace(hour=23, minute=59)
@@ -300,7 +305,7 @@ def precipitacion_historico(request, id_estacion = 1):
     desde = desde.replace(hour=00, minute=01)
     pprint.pprint(desde)
 
-    fechaHastaDefault = datetime.today() - timedelta(days=30)
+    fechaHastaDefault = datetime.today() - timedelta(days=10)
     hasta = request.GET.get('hasta', fechaHastaDefault.strftime("%Y-%m-%d"))
     hasta = datetime.strptime(hasta, '%Y-%m-%d')
     hasta = hasta.replace(hour=23, minute=59)
@@ -335,7 +340,7 @@ def precipitacion_acumulado_dia(request, id_estacion = 1):
     desde = desde.replace(hour=00, minute=01)
     pprint.pprint(desde)
 
-    fechaHastaDefault = datetime.today() - timedelta(days=30)
+    fechaHastaDefault = datetime.today() - timedelta(days=10)
     hasta = request.GET.get('hasta', fechaHastaDefault.strftime("%Y-%m-%d"))
     hasta = datetime.strptime(hasta, '%Y-%m-%d')
     hasta = hasta.replace(hour=23, minute=59)
@@ -372,7 +377,7 @@ def viento_conteo_direccion(request, id_estacion = 1):
     desde = datetime.strptime(desde, '%Y-%m-%d')
     desde = desde.replace(hour=00, minute=01)
 
-    fechaHastaDefault = datetime.today() - timedelta(days=30)
+    fechaHastaDefault = datetime.today() - timedelta(days=10)
     hasta = request.GET.get('hasta', fechaHastaDefault.strftime("%Y-%m-%d"))
     hasta = datetime.strptime(hasta, '%Y-%m-%d')
     hasta = hasta.replace(hour=23, minute=59)
