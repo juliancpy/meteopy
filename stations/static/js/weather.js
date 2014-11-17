@@ -386,7 +386,7 @@ HomeCharts.vientoDireccionHistorico = function(elementoSelector)
 
     var datos = HomeCharts.cargarDatosSincrono('/viento/conteo_direccion/' + Dashboard._idEstacion, HomeCharts._fechaInicio, HomeCharts._fechaFin);
 
-    HomeCharts._graficos.graficoPolarGrados(elementoSelector, datos['direcciones'], datos['valores'], 'Precipitacion Acumulada por dia', 'Lluvia (mm)');
+    HomeCharts._graficos.graficoPolarGrados(elementoSelector, datos['direcciones'], datos['valores'], 'Lecturas de Direccion del Viento', 'Cantidad de Lecturas');
 };
 
 HomeCharts.precipitacionHistorico = function(elementoSelector)

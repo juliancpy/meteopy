@@ -4,7 +4,7 @@ import json
 import pprint
 import calendar
 import pytz
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, date, time
 
 from django.db.models import Min, Max, Sum
 from django.http import HttpResponseNotFound, HttpResponse
@@ -39,8 +39,24 @@ def home(request, id_estacion=1):
         # rain_day = Data.objects.filter(datetime__year=data.datetime.year, datetime__month=data.datetime.month,
         #                                datetime__day=data.datetime.day).values('station_name').annotate(Sum('rain'))
 
-        ultimosRegistros = Data.objects.filter(station=sttn, datetime__year=data.datetime.year, datetime__month=data.datetime.month,
-                                        datetime__day=data.datetime.day)
+        # http://stackoverflow.com/questions/1317714/how-can-i-filter-a-date-of-a-datetimefield-in-django
+        # http://stackoverflow.com/questions/7217811/query-datetime-by-todays-date-in-django
+        # http://stackoverflow.com/questions/6040175/datetime-and-date-comparison-in-django-queryset
+        # mysql buscar fecha como texto
+        # http://stackoverflow.com/questions/14104304/mysql-select-where-datetime-matches-day-and-not-necessarily-time
+
+        #Data.objects.filter(datetime=datetime(data.datetime.year, data.datetime.month, data.datetime.day))
+        #Data.objects.filter(station=sttn, datetime__contains=date(data.datetime.year, data.datetime.month, data.datetime.day))
+
+        dia_hora_min = datetime.combine(data.datetime.date(), time.min)
+        dia_hora_max = datetime.combine(data.datetime.date(), time.max)
+        Data.objects.filter(station=sttn, datetime__range=(dia_hora_min, dia_hora_max))
+
+        #ultimosRegistros = Data.objects.filter(station=sttn, datetime__year=data.datetime.year, datetime__month=data.datetime.month,
+        #                                datetime__day=data.datetime.day)
+
+        ultimosRegistros = Data.objects.filter(station=sttn, datetime__range=(dia_hora_min, dia_hora_max))
+
 
         # se coloca un order_by() vacio pues el modelo tiene una clase Meta con order by 'datetime'
         # rain_day = Data.objects.filter(station=sttn, datetime__year=data.datetime.year, datetime__month=data.datetime.month,
@@ -62,14 +78,11 @@ def home(request, id_estacion=1):
 
         # dirMaxVelVientoDia = Data.objects.filter(station=sttn, datetime__year=data.datetime.year, datetime__month=data.datetime.month,
         #                                          datetime__day=data.datetime.day, windspeed=maxVelVientoDia).order_by('-datetime')[0].winddir
-        dataMaxVelVientoDia = Data.objects.filter(station=sttn, datetime__year=data.datetime.year, datetime__month=data.datetime.month,
-                                                 datetime__day=data.datetime.day, windspeed=maxVelVientoDia).order_by('-datetime')[0]
+        dataMaxVelVientoDia = Data.objects.filter(station=sttn, datetime__range=(dia_hora_min, dia_hora_max), windspeed=maxVelVientoDia).order_by('-datetime')[0]
 
-        dataMinTempDia = Data.objects.filter(station=sttn, datetime__year=data.datetime.year, datetime__month=data.datetime.month,
-                                                 datetime__day=data.datetime.day, outtemp=minTempDia).order_by('-datetime')[0]
+        dataMinTempDia = Data.objects.filter(station=sttn, datetime__range=(dia_hora_min, dia_hora_max), outtemp=minTempDia).order_by('-datetime')[0]
 
-        dataMaxTempDia = Data.objects.filter(station=sttn, datetime__year=data.datetime.year, datetime__month=data.datetime.month,
-                                                 datetime__day=data.datetime.day, outtemp=maxTempDia).order_by('-datetime')[0]
+        dataMaxTempDia = Data.objects.filter(station=sttn, datetime__range=(dia_hora_min, dia_hora_max), outtemp=maxTempDia).order_by('-datetime')[0]
 
 
         url ='http://www.meteorologia.gov.py/interior.php?depto=' + str(data.station.departamento)
