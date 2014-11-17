@@ -423,9 +423,9 @@ Dashboard.inicializar = function()
     Dashboard._idEstacion = 1;
     Dashboard.temperaturaTabListener();
 
-    //HomeCharts._fechaFin = '2012-02-05';
-    //HomeCharts._fechaInicio = '2012-01-25';
-    //HomeCharts._fechaDiezDiasFin = '2012-01-29';
+    // HomeCharts._fechaFin = '2012-02-05';
+    // HomeCharts._fechaInicio = '2012-01-25';
+    // HomeCharts._fechaDiezDiasFin = '2012-01-29';
 };
 
 Dashboard.temperaturaTabListener = function()
