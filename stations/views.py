@@ -13,7 +13,7 @@ from django.shortcuts import render_to_response
 from django.core.serializers.json import DjangoJSONEncoder
 
 from stations.models import Station, Data, Link
-
+from django.db.models import Q
 
 
 # Calculo de conversion de un valor de temperatura F a C.
@@ -240,7 +240,7 @@ def viento_historico(request, id_estacion = 1):
     pprint.pprint(hasta)
 
     # forzar a que sea una lista el resultado para poder serializar - https://docs.djangoproject.com/en/dev/ref/models/querysets/
-    datos = list(Data.objects.filter(datetime__gt = desde, datetime__lt = hasta))
+    datos = list(Data.objects.filter(~Q(windspeed=None), datetime__gt = desde, datetime__lt = hasta))
 
     result = []
 
