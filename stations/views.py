@@ -194,7 +194,7 @@ def temperatura_historico(request, id_estacion = 1):
     pprint.pprint(hasta)
 
     # forzar a que sea una lista el resultado para poder serializar - https://docs.djangoproject.com/en/dev/ref/models/querysets/
-    datos = list(Data.objects.filter(datetime__gt = desde, datetime__lt = hasta).values('pk', 'datetime', 'rain', 'outtemp'))
+    datos = list(Data.objects.filter(station = station, datetime__gt = desde, datetime__lt = hasta).values('pk', 'datetime', 'rain', 'outtemp'))
 
     result = []
 
@@ -240,7 +240,7 @@ def viento_historico(request, id_estacion = 1):
     pprint.pprint(hasta)
 
     # forzar a que sea una lista el resultado para poder serializar - https://docs.djangoproject.com/en/dev/ref/models/querysets/
-    datos = list(Data.objects.filter(~Q(windspeed=None), datetime__gt = desde, datetime__lt = hasta))
+    datos = list(Data.objects.filter(~Q(windspeed=None), station = station,  datetime__gt = desde, datetime__lt = hasta))
 
     result = []
 
@@ -276,7 +276,7 @@ def viento_direccion_historico(request, id_estacion = 1):
     pprint.pprint(hasta)
 
     # forzar a que sea una lista el resultado para poder serializar - https://docs.djangoproject.com/en/dev/ref/models/querysets/
-    datos = list(Data.objects.filter(datetime__gt = desde, datetime__lt = hasta))
+    datos = list(Data.objects.filter(station = station, datetime__gt = desde, datetime__lt = hasta))
 
     result = []
 
@@ -312,7 +312,7 @@ def precipitacion_historico(request, id_estacion = 1):
     pprint.pprint(hasta)
 
     # forzar a que sea una lista el resultado para poder serializar - https://docs.djangoproject.com/en/dev/ref/models/querysets/
-    datos = list(Data.objects.filter(datetime__gt = desde, datetime__lt = hasta))
+    datos = list(Data.objects.filter(station = station, datetime__gt = desde, datetime__lt = hasta))
 
     result = []
 
@@ -347,7 +347,7 @@ def precipitacion_acumulado_dia(request, id_estacion = 1):
     pprint.pprint(hasta)
 
     # http://stackoverflow.com/questions/2278076/count-number-of-records-by-date-in-django/2283913#2283913
-    datos = list(Data.objects.filter(datetime__gt = desde, datetime__lt = hasta).extra({'date_rain' : "date(datetime)"}).values('date_rain').annotate(rain_sum=Sum('rain')).order_by())
+    datos = list(Data.objects.filter(station = station, datetime__gt = desde, datetime__lt = hasta).extra({'date_rain' : "date(datetime)"}).values('date_rain').annotate(rain_sum=Sum('rain')).order_by())
 
     dias = []
     valores = []
@@ -377,7 +377,7 @@ def viento_conteo_direccion(request, id_estacion = 1):
     desde = datetime.strptime(desde, '%Y-%m-%d')
     desde = desde.replace(hour=00, minute=01)
 
-    fechaHastaDefault = datetime.today() - timedelta(days=10)
+    fechaHastaDefault = datetime.today() - timedelta(days=1)
     hasta = request.GET.get('hasta', fechaHastaDefault.strftime("%Y-%m-%d"))
     hasta = datetime.strptime(hasta, '%Y-%m-%d')
     hasta = hasta.replace(hour=23, minute=59)
@@ -386,7 +386,7 @@ def viento_conteo_direccion(request, id_estacion = 1):
     pprint.pprint(hasta)
 
     # forzar a que sea una lista el resultado para poder serializar - https://docs.djangoproject.com/en/dev/ref/models/querysets/
-    datos = list(Data.objects.filter(datetime__gt = desde, datetime__lt = hasta))
+    datos = list(Data.objects.filter(station = station, datetime__gt = desde, datetime__lt = hasta))
 
     pprint.pprint(datos)
 
