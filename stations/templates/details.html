@@ -131,36 +131,36 @@
 			<tbody>
 				<tr>
 					<td><div><i class="ico temperatura-max ico-left"></i> Temperatura Máxima</div></td>
-					<td><div>{{ extra.outtemp_max.val|floatformat:"2" }} ºC</div></td>
+					<td><div>{{ extra.outtemp_max.outtemp_celsius|floatformat:"2" }} ºC</div></td>
 					<td><div>{{ extra.outtemp_max.datetime | date:"H:m" }}</div></td>
 				</tr>
 
 				<tr>
 					<td><div><i class="ico temperatura-min ico-left"></i> Temperatura Mínima</div></td>
-					<td><div>{{ extra.outtemp_min.val| floatformat:"2" }} ºC</div></td>
+					<td><div>{{ extra.outtemp_min.outtemp_celsius| floatformat:"2" }} ºC</div></td>
 					<td><div>{{ extra.outtemp_min.datetime|date:"H:m" }}</div></td>
 				</tr>
 
 				<tr>
 					<td><div><i class="ico precipitacion ico-left"></i> Precipitación acumulada</div></td>
-					<td><div>0 mm</div></td>
+					<td><div>{{ extra.rain_day_acum | floatformat:"2" }} mm</div></td>
 					<td><div>00:00 – {{ data.datetime|date:"H:m" }}</div></td>
 				</tr>
 
 				<tr>
 					<td><div><i class="ico humedad-max ico-left"></i> Humedad máxima</div></td>
-					<td><div>{{ extra.humidity_max.val }}%</div></td>
+					<td><div>{{ extra.humidity_max.outhumidity }}%</div></td>
 					<td><div>{{ extra.humidity_max.datetime|date:"H:m" }}</div></td>
 				</tr>
 
 				<tr>
 					<td><div><i class="ico humedad-min ico-left"></i> Humedad mínima</div></td>
-					<td><div>{{ extra.humidity_min.val }}%</div></td>
+					<td><div>{{ extra.humidity_min.outhumidity }}%</div></td>
 					<td><div>{{ extra.humidity_min.datetime|date:"H:m" }} </div></td>
 				</tr>
 				<tr>
 					<td><div><i class="ico viento-max ico-left"></i> Viento Máximo</div></td>
-					<td><div>{{ extra.windspeed_max.val |floatformat:"2" }}kmph</div></td>
+					<td><div>{{ extra.windspeed_max.windspeed |floatformat:"2" }}kmph</div></td>
 					<td><div>{{ extra.windspeed_max.datetime | date:"H:m" }}</div></td>
 				</tr>
 			</tbody>
