@@ -14,6 +14,7 @@ from django.db import models
 from daterange_filter.filter import DateRangeFilter
 from django.db.models import Min, Sum
 from django.http import HttpResponse
+from stations.action import export_to_csv
 
 
 class Station(models.Model):
@@ -73,42 +74,42 @@ class Data(models.Model):
     et = models.FloatField(db_column='ET', blank=True, null=True)  # Field name made lowercase.
     radiation = models.FloatField(blank=True, null=True)
     uv = models.FloatField(db_column='UV', blank=True, null=True)  # Field name made lowercase.
-    extratemp1 = models.FloatField(db_column='extraTemp1', blank=True, null=True)  # Field name made lowercase.
-    extratemp2 = models.FloatField(db_column='extraTemp2', blank=True, null=True)  # Field name made lowercase.
-    extratemp3 = models.FloatField(db_column='extraTemp3', blank=True, null=True)  # Field name made lowercase.
-    soiltemp1 = models.FloatField(db_column='soilTemp1', blank=True, null=True)  # Field name made lowercase.
-    soiltemp2 = models.FloatField(db_column='soilTemp2', blank=True, null=True)  # Field name made lowercase.
-    soiltemp3 = models.FloatField(db_column='soilTemp3', blank=True, null=True)  # Field name made lowercase.
-    soiltemp4 = models.FloatField(db_column='soilTemp4', blank=True, null=True)  # Field name made lowercase.
-    leaftemp1 = models.FloatField(db_column='leafTemp1', blank=True, null=True)  # Field name made lowercase.
-    leaftemp2 = models.FloatField(db_column='leafTemp2', blank=True, null=True)  # Field name made lowercase.
-    extrahumid1 = models.FloatField(db_column='extraHumid1', blank=True, null=True)  # Field name made lowercase.
-    extrahumid2 = models.FloatField(db_column='extraHumid2', blank=True, null=True)  # Field name made lowercase.
-    soilmoist1 = models.FloatField(db_column='soilMoist1', blank=True, null=True)  # Field name made lowercase.
-    soilmoist2 = models.FloatField(db_column='soilMoist2', blank=True, null=True)  # Field name made lowercase.
-    soilmoist3 = models.FloatField(db_column='soilMoist3', blank=True, null=True)  # Field name made lowercase.
-    soilmoist4 = models.FloatField(db_column='soilMoist4', blank=True, null=True)  # Field name made lowercase.
-    leafwet1 = models.FloatField(db_column='leafWet1', blank=True, null=True)  # Field name made lowercase.
-    leafwet2 = models.FloatField(db_column='leafWet2', blank=True, null=True)  # Field name made lowercase.
-    rxcheckpercent = models.FloatField(db_column='rxCheckPercent', blank=True, null=True)  # Field name made lowercase.
-    txbatterystatus = models.FloatField(db_column='txBatteryStatus', blank=True,
+    extratemp1 = models.FloatField(default=0, db_column='extraTemp1', blank=True, null=True)  # Field name made lowercase.
+    extratemp2 = models.FloatField(default=0, db_column='extraTemp2', blank=True, null=True)  # Field name made lowercase.
+    extratemp3 = models.FloatField(default=0, db_column='extraTemp3', blank=True, null=True)  # Field name made lowercase.
+    soiltemp1 = models.FloatField(default=0, db_column='soilTemp1', blank=True, null=True)  # Field name made lowercase.
+    soiltemp2 = models.FloatField(default=0, db_column='soilTemp2', blank=True, null=True)  # Field name made lowercase.
+    soiltemp3 = models.FloatField(default=0, db_column='soilTemp3', blank=True, null=True)  # Field name made lowercase.
+    soiltemp4 = models.FloatField(default=0, db_column='soilTemp4', blank=True, null=True)  # Field name made lowercase.
+    leaftemp1 = models.FloatField(default=0, db_column='leafTemp1', blank=True, null=True)  # Field name made lowercase.
+    leaftemp2 = models.FloatField(default=0, db_column='leafTemp2', blank=True, null=True)  # Field name made lowercase.
+    extrahumid1 = models.FloatField(default=0, db_column='extraHumid1', blank=True, null=True)  # Field name made lowercase.
+    extrahumid2 = models.FloatField(default=0, db_column='extraHumid2', blank=True, null=True)  # Field name made lowercase.
+    soilmoist1 = models.FloatField(default=0, db_column='soilMoist1', blank=True, null=True)  # Field name made lowercase.
+    soilmoist2 = models.FloatField(default=0, db_column='soilMoist2', blank=True, null=True)  # Field name made lowercase.
+    soilmoist3 = models.FloatField(default=0, db_column='soilMoist3', blank=True, null=True)  # Field name made lowercase.
+    soilmoist4 = models.FloatField(default=0, db_column='soilMoist4', blank=True, null=True)  # Field name made lowercase.
+    leafwet1 = models.FloatField(default=0, db_column='leafWet1', blank=True, null=True)  # Field name made lowercase.
+    leafwet2 = models.FloatField(default=0, db_column='leafWet2', blank=True, null=True)  # Field name made lowercase.
+    rxcheckpercent = models.FloatField(default=0, db_column='rxCheckPercent', blank=True, null=True)  # Field name made lowercase.
+    txbatterystatus = models.FloatField(default=0, db_column='txBatteryStatus', blank=True,
                                         null=True)  # Field name made lowercase.
-    consbatteryvoltage = models.FloatField(db_column='consBatteryVoltage', blank=True,
+    consbatteryvoltage = models.FloatField(default=0, db_column='consBatteryVoltage', blank=True,
                                            null=True)  # Field name made lowercase.
-    hail = models.FloatField(blank=True, null=True)
-    hailrate = models.FloatField(db_column='hailRate', blank=True, null=True)  # Field name made lowercase.
-    heatingtemp = models.FloatField(db_column='heatingTemp', blank=True, null=True)  # Field name made lowercase.
-    heatingvoltage = models.FloatField(db_column='heatingVoltage', blank=True, null=True)  # Field name made lowercase.
-    supplyvoltage = models.FloatField(db_column='supplyVoltage', blank=True, null=True)  # Field name made lowercase.
-    referencevoltage = models.FloatField(db_column='referenceVoltage', blank=True,
+    hail = models.FloatField(default=0, blank=True, null=True)
+    hailrate = models.FloatField(default=0, db_column='hailRate', blank=True, null=True)  # Field name made lowercase.
+    heatingtemp = models.FloatField(default=0, db_column='heatingTemp', blank=True, null=True)  # Field name made lowercase.
+    heatingvoltage = models.FloatField(default=0, db_column='heatingVoltage', blank=True, null=True)  # Field name made lowercase.
+    supplyvoltage = models.FloatField(default=0, db_column='supplyVoltage', blank=True, null=True)  # Field name made lowercase.
+    referencevoltage = models.FloatField(default=0, db_column='referenceVoltage', blank=True,
                                          null=True)  # Field name made lowercase.
-    windbatterystatus = models.FloatField(db_column='windBatteryStatus', blank=True,
+    windbatterystatus = models.FloatField(default=0, db_column='windBatteryStatus', blank=True,
                                           null=True)  # Field name made lowercase.
-    rainbatterystatus = models.FloatField(db_column='rainBatteryStatus', blank=True,
+    rainbatterystatus = models.FloatField(default=0, db_column='rainBatteryStatus', blank=True,
                                           null=True)  # Field name made lowercase.
-    outtempbatterystatus = models.FloatField(db_column='outTempBatteryStatus', blank=True,
+    outtempbatterystatus = models.FloatField(default=0, db_column='outTempBatteryStatus', blank=True,
                                              null=True)  # Field name made lowercase.
-    intempbatterystatus = models.FloatField(db_column='inTempBatteryStatus', blank=True,
+    intempbatterystatus = models.FloatField(default=0, db_column='inTempBatteryStatus', blank=True,
                                             null=True)  # Field name made lowercase.
     station_name = models.CharField(max_length=255)
     station = models.ForeignKey(Station)
@@ -180,35 +181,10 @@ class Data(models.Model):
 
 
 
-def export_csv(modeladmin, request, queryset):
-    import csv
-    from django.utils.encoding import smart_str
-
-    response = HttpResponse(mimetype='text/csv')
-    response['Content-Disposition'] = 'attachment; filename=mymodel.csv'
-    writer = csv.writer(response, csv.excel)
-    response.write(u'\ufeff'.encode('utf8'))  # BOM (optional...Excel needs it to open UTF-8 file properly)
-    writer.writerow([
-        smart_str(u"datetime"),
-        smart_str(u"outtemp"),
-        smart_str(u"outhumidity"),
-    ])
-    for obj in queryset:
-        writer.writerow([
-            smart_str(obj.pk),
-            smart_str(obj.outtemp),
-            smart_str(obj.outhumidity),
-        ])
-    return response
-
-
-export_csv.short_description = u"Export CSV"
-
-
 class DataAdmin(admin.ModelAdmin):
     list_display = ('station_name', 'station', 'datetime', 'outtemp', 'outhumidity', 'rain', 'windspeed', 'winddir')
     list_filter = (
         'station_name',
         ('datetime', DateRangeFilter),
     )
-    actions = [export_csv]
+    actions = [export_to_csv]
