@@ -4,6 +4,7 @@ import json
 import pprint
 import calendar
 import pytz
+import csv
 from datetime import datetime, timedelta, date, time
 
 from django.db.models import Min, Max, Sum
@@ -11,9 +12,11 @@ from django.http import HttpResponseNotFound, HttpResponse
 from django.shortcuts import get_object_or_404
 from django.shortcuts import render_to_response
 from django.core.serializers.json import DjangoJSONEncoder
+from django.template import loader, Context
 
 from stations.models import Station, Data, Link
 from django.db.models import Q
+from django.views.decorators.csrf import csrf_exempt
 
 
 # Calculo de conversion de un valor de temperatura F a C.
@@ -155,6 +158,160 @@ def menu_view(request):
     stations = Station.objects.all()
     return render_to_response('menu.html', {'stations': stations})
 
+def reporte(request):
+    stations = Station.objects.all()
+    return render_to_response('reporte.html', {'stations' : stations})
+
+@csrf_exempt
+def reporte_generar(request):
+
+    reporte = reporte_generar_datos(request)
+
+    template = loader.get_template('reporte-tabla.html')
+    c = Context({ 'datos': reporte['datos'], 'titulos' : reporte['titulos'] })
+    rendered = template.render(c)
+
+    response_data = {}
+    response_data['status'] = 'ok'
+    response_data['data'] = rendered
+
+    return HttpResponse(json.dumps(response_data, cls=DjangoJSONEncoder), content_type="application/json")
+
+@csrf_exempt
+def reporte_generar_csv(request):
+    # Create the HttpResponse object with the appropriate CSV header.
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="somefilename.csv"'
+
+    writer = csv.writer(response)
+    writer.writerow(['First row', 'Foo', 'Bar', 'Baz'])
+    writer.writerow(['Second row', 'A', 'B', 'C', '"Testing"', "Here's a quote"])
+
+    return response
+
+# metodo privado que genera los datos de los reportes
+def reporte_generar_datos(request):
+
+    campo_estaciones = request.POST.get("rep_estaciones", "all")
+    campo_atributos = request.POST.get("rep_atributos", "outtemp")
+    campo_informe = request.POST.get("rep_informe", "mes")
+
+    #campo_desde = request.POST.get("rep_desde", datetime.today().strftime("%Y-%m-%d"))
+    campo_desde = request.POST.get("rep_desde", '2014-11-17')
+    campo_desde = datetime.strptime(campo_desde, '%Y-%m-%d')
+    campo_desde = campo_desde.replace(hour=00, minute=01)
+
+    #campo_hasta = request.POST.get("rep_hasta", datetime.today().strftime("%Y-%m-%d"))
+    campo_hasta = request.POST.get("rep_hasta", '2014-11-17')
+    campo_hasta = datetime.strptime(campo_hasta, '%Y-%m-%d')
+    campo_hasta = campo_hasta.replace(hour=23, minute=59)
+
+    titulos_nombres = {'winddir' : 'Viento Direccion', 'et' : 'Radiacion Solar', 'outhumidity' : 'Humedad', 'rain' : 'Lluvia', 'barometer' : 'Barometro', 'outtemp' : 'Temperatura', 'heatindex' : 'Sensacion Termica', 'uv' : 'Ultravioleta'}
+
+    pprint.pprint(campo_estaciones)
+
+    if (campo_estaciones != 'all'):
+        filtro_estaciones = Q(station_id__in=campo_estaciones.split(','))
+    else:
+        filtro_estaciones = Q(pk__gt=0)
+
+    filtro_desde = Q(datetime__gt = campo_desde)
+    filtro_hasta = Q(datetime__lt = campo_hasta)
+
+    datos = list(Data.objects.filter(filtro_estaciones, filtro_desde, filtro_hasta))
+
+    result = []
+
+    if (campo_informe == 'all'):
+        # codigo para datos sin promedio
+        for d in datos:
+            fila = {'fecha' : d.datetime.strftime("%Y-%m-%d %H:%M:%S")}
+
+            for campo in campo_atributos.split(','):
+                fila[campo] = d.__dict__[campo]
+
+            result.append(fila)
+    else:
+        if (campo_informe == 'hora'):
+            campo_informe = '%Y-%m-%d %H'
+
+        if (campo_informe == 'dia'):
+            campo_informe = '%Y-%m-%d'
+
+        if (campo_informe == 'mes'):
+            campo_informe = '%Y-%m'
+
+        promedios = {}
+
+        # generar sumatoria de datos
+        for d in datos:
+            agrupacion = d.datetime.strftime(campo_informe)
+
+            if (agrupacion in promedios):
+                promedios[agrupacion]['cantidad'] += 1
+                promedios[agrupacion]['winddir']   += (d.winddir if d.winddir != None else 0)
+                promedios[agrupacion]['et']        += (d.et if d.et != None else 0)
+                promedios[agrupacion]['outhumidity'] += (d.outhumidity if d.outhumidity != None else 0)
+                promedios[agrupacion]['rain']      += (d.rain if d.rain != None else 0)
+                promedios[agrupacion]['barometer'] += (d.barometer if d.barometer != None else 0)
+                promedios[agrupacion]['outtemp']   += (d.outtemp if d.outtemp != None else 0)
+                promedios[agrupacion]['heatindex'] += (d.heatindex if d.heatindex != None else 0)
+                promedios[agrupacion]['soiltemp1'] += (d.soiltemp1 if d.soiltemp1 != None else 0)
+                promedios[agrupacion]['et']        += (d.et if d.et != None else 0)
+                promedios[agrupacion]['heatindex'] += (d.heatindex if d.heatindex != None else 0)
+                promedios[agrupacion]['uv']        += (d.uv if d.uv != None else 0)
+
+            else:
+                promedios[agrupacion] = {}
+                promedios[agrupacion]['cantidad'] = 1
+                promedios[agrupacion]['winddir']   = (d.winddir if d.winddir != None else 0)
+                promedios[agrupacion]['et']        = (d.et if d.et != None else 0)
+                promedios[agrupacion]['outhumidity'] = (d.outhumidity if d.outhumidity != None else 0)
+                promedios[agrupacion]['rain']      = (d.rain if d.rain != None else 0)
+                promedios[agrupacion]['barometer'] = (d.barometer if d.barometer != None else 0)
+                promedios[agrupacion]['outtemp']   = (d.outtemp if d.outtemp != None else 0)
+                promedios[agrupacion]['heatindex'] = (d.heatindex if d.heatindex != None else 0)
+                promedios[agrupacion]['soiltemp1'] = (d.soiltemp1 if d.soiltemp1 != None else 0)
+                promedios[agrupacion]['et']        = (d.et if d.et != None else 0)
+                promedios[agrupacion]['heatindex'] = (d.heatindex if d.heatindex != None else 0)
+                promedios[agrupacion]['uv']        = (d.uv if d.uv != None else 0)
+
+        # calcular promedio
+        for indice in promedios:
+            promedios[indice]['winddir']     = promedios[indice]['winddir'] / promedios[indice]['cantidad']
+            promedios[indice]['et']          = promedios[indice]['et'] / promedios[indice]['cantidad']
+            promedios[indice]['outhumidity'] = promedios[indice]['outhumidity'] / promedios[indice]['cantidad']
+            promedios[indice]['rain']        = promedios[indice]['rain'] / promedios[indice]['cantidad']
+            promedios[indice]['barometer']   = promedios[indice]['barometer'] / promedios[indice]['cantidad']
+            promedios[indice]['outtemp']     = promedios[indice]['outtemp'] / promedios[indice]['cantidad']
+            promedios[indice]['heatindex']   = promedios[indice]['heatindex'] / promedios[indice]['cantidad']
+            promedios[indice]['soiltemp1']   = promedios[indice]['soiltemp1'] / promedios[indice]['cantidad']
+            promedios[indice]['et']          = promedios[indice]['et'] / promedios[indice]['cantidad']
+            promedios[indice]['heatindex']   = promedios[indice]['heatindex'] / promedios[indice]['cantidad']
+            promedios[indice]['uv']          = promedios[indice]['uv'] / promedios[indice]['cantidad']
+
+        for indice in promedios:
+            fila = promedios[indice]
+            fila['fecha'] = indice
+            result.append(fila)
+
+    filas = []
+    titulos = ['Fecha']
+    #pprint.pprint(result)
+
+    for campo in campo_atributos.split(','):
+            titulos.append(titulos_nombres[campo])
+
+    for registro in result:
+        fila = []
+        fila.append(registro['fecha'])
+        for campo in campo_atributos.split(','):
+            fila.append(registro[campo])
+
+        filas.append(fila)
+
+    #pprint.pprint(filas)
+    return { 'datos': filas, 'titulos' : titulos }
 
 def temperatura_historico(request, id_estacion = 1):
 

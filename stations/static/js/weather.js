@@ -34,6 +34,131 @@ jQuery(document).ready(function($){
 
     Dashboard.inicializar();
 
+
+    // REPORTES
+    var $steps_total = $('#filter-report li').length;
+    var $step = 0;
+    var $report_filter = false;
+
+    $('#filter-report a').on('click', function(e){
+        e.preventDefault();
+    });
+
+
+    $('#filter-report-content .nav-pills a').on('click', function(e){
+        e.preventDefault();
+
+        var $this = $(this),
+                 $filter_info = $('#filter-report-info'),
+                 $info = $this.data('info'),
+                 $text = $this.html(),
+                 $id = $this.attr('id'),
+                 $tabpane = $this.closest('.tab-pane');
+
+        $text = $text.replace('<span class="fa fa-check"></span>', '');
+        $text = $text.replace('<span', '<span class="'+ $id +'"');
+
+
+
+        // If is multiselect
+        if( $tabpane.hasClass('tab-multiselect') ){
+
+            var $cant_info = $this.closest('.tab-pane').find('.selected').length;
+            console.log($cant_info +1);
+
+
+            if( $this.attr('id') == 'select-all' ){
+                $tabpane.find('.nav-pills a').addClass('selected');
+                $filter_info.find('.info-'+$info).html($text);
+            }else{
+
+                $filter_info.find('.info-'+$info+' .select-all').remove();
+                $tabpane.find('#select-all').removeClass('selected');
+
+                // Change selected
+                if( $this.hasClass('selected') ){
+                    $this.removeClass('selected');
+
+                    if( $cant_info > 3 ){
+                        $filter_info.find('.info-'+$info).html('<span class="more_than_3">3+...</span>');
+                    }
+
+                    if( $cant_info == 4 ){
+                        $filter_info.find('.info-'+$info+' .more_than_3').remove();
+                        $text = '';
+                        var $filter_count = 0;
+                        $this.closest('.tab-pane').find('.selected').each(function(){
+                            $text = $(this).html();
+                            $text = $text.replace('<span class="fa fa-check"></span>', '');
+                            $text = $text.replace('<span', '<span class="'+ $(this).attr('id') +'"');
+                            var $curinfo = $filter_info.find('.info-'+$info).html();
+                            $filter_info.find('.info-'+$info).html($curinfo + $text);
+                        });
+                    }
+
+                    if( $cant_info < 4 ){
+                        console.log('.info-'+$info+' .'+$id);
+                        $filter_info.find('.info-'+$info+' .'+$id).remove();
+                    }
+
+
+                }else{
+
+
+                    $this.addClass('selected');
+                    if( $cant_info < 3 ){
+                        $filter_info.find('.info-'+$info+' .more_than_3').remove();
+                        var $curinfo = $filter_info.find('.info-'+$info).html();
+                        $filter_info.find('.info-'+$info).html($curinfo + $text);
+                    }else{
+                        $filter_info.find('.info-'+$info).html('<span class="more_than_3">3+...</span>');
+                    }
+                }
+
+            }
+
+
+        // If isn't multiselect
+        }else{
+
+            $('#filter-report-content .tab-pane.active a').removeClass('selected');
+            $(this).addClass('selected');
+            $filter_info.find('.info-'+$info).html($text);
+            step();
+
+        }
+    });
+
+
+
+    $('.tab-multiselect .btn-next').on('click', function(e){
+        e.preventDefault();
+
+        var $this = $(this);
+
+        if( $this.closest('.tab-pane').find('.selected').length > 0 ){
+            step();
+        }
+    });
+
+    function step()
+    {
+        if ( $step < $steps_total )
+        {
+            $('#filter-report li.active a').addClass('enabled');
+            $('#filter-report li.active').removeClass('active').next().addClass('active').find('> a').attr('data-toggle', 'tab');
+            $('#filter-report-content .active').removeClass('active in').next().addClass('active in');
+            $step++
+        }
+
+        if ( $step == $steps_total )
+        {
+            $('#filter-report li.active').removeClass('active');
+            //$('#tablent-report').removeClass('hidden');
+            Reporte.generarReporte();
+        }
+    }
+
 });//jQuery
 
 var Util = {
@@ -201,53 +326,6 @@ HighCharts.graficoBarra = function(elementoSelector, datosX, datosY, titulo, lab
 
 HighCharts.graficoPolarGrados = function(elementoSelector, datosX, datosY, titulo, labelValor)
 {
-    // jQuery(elementoSelector).highcharts({
-    //     chart: {
-    //         polar: true,
-    //         type: 'line'
-    //     },
-
-    //     title: {
-    //         text: 'Budget vs spending',
-    //         x: -80
-    //     },
-
-    //     pane: {
-    //         size: '80%'
-    //     },
-
-    //     xAxis: {
-    //         categories: datosX,
-    //         tickmarkPlacement: 'on',
-    //         lineWidth: 0
-    //     },
-
-    //     yAxis: {
-    //         gridLineInterpolation: 'polygon',
-    //         lineWidth: 0,
-    //         min: 0
-    //     },
-
-    //     tooltip: {
-    //         shared: true,
-    //         pointFormat: '<span style="color:{series.color}">{series.name}: <b>${point.y:,.0f}</b><br/>'
-    //     },
-
-    //     legend: {
-    //         align: 'right',
-    //         verticalAlign: 'top',
-    //         y: 70,
-    //         layout: 'vertical'
-    //     },
-
-    //     series: [{
-    //         name: 'Allocated Budget',
-    //         data: datosY,
-    //         pointPlacement: 'on'
-    //     }]
-
-    // });
-
     jQuery(elementoSelector).highcharts({
         chart: {
             polar: true
@@ -306,7 +384,7 @@ var HomeCharts = {
     _graficos : HighCharts,
     _fechaInicio : null,
     _fechaFin : null,
-    _fechaDiezDiasFin : null,
+    _fechaDiezDiasInicio : null,
     temperaturaHistorico : null,
     velocidadHistorico : null,
     vientoHistorico : null,
@@ -320,7 +398,7 @@ HomeCharts.inicializar = function()
 {
     HomeCharts._fechaInicio = Util.getFechaActualResta(15);
     HomeCharts._fechaFin =  Util.getFechaActual();
-    HomeCharts._fechaDiezDiasFin = Util.getFechaActualResta(10);
+    HomeCharts._fechaDiezDiasInicio = Util.getFechaActualResta(10);
 };
 
 HomeCharts.cargarDatosSincrono = function(url, desde, hasta)
@@ -372,18 +450,6 @@ HomeCharts.vientoHistorico = function(elementoSelector)
 
 HomeCharts.vientoDireccionHistorico = function(elementoSelector)
 {
-    // var datos = HomeCharts.cargarDatosSincrono('/viento/direccion_historico/' + Dashboard._idEstacion, HomeCharts._fechaInicio, HomeCharts._fechaFin);
-
-    // var serie = [];
-
-    // // preparar los datos
-    // for (var i = 0; i < datos.length; i++)
-    // {
-    //     serie.push({x: datos[i].datetime, y: datos[i].winddir, name: datos[i].datetime});
-    // }
-
-    // HomeCharts._graficos.graficoLinea(elementoSelector, serie, '', 'Direccion');
-
     var datos = HomeCharts.cargarDatosSincrono('/viento/conteo_direccion/' + Dashboard._idEstacion, HomeCharts._fechaInicio, HomeCharts._fechaFin);
 
     HomeCharts._graficos.graficoPolarGrados(elementoSelector, datos['direcciones'], datos['valores'], 'Lecturas de Direccion del Viento', 'Cantidad de Lecturas');
@@ -391,22 +457,9 @@ HomeCharts.vientoDireccionHistorico = function(elementoSelector)
 
 HomeCharts.precipitacionHistorico = function(elementoSelector)
 {
-    // var datos = HomeCharts.cargarDatosSincrono('/precipitacion/historico/' + Dashboard._idEstacion, HomeCharts._fechaInicio, HomeCharts._fechaFin);
-
-    // var serie = [];
-
-    // // preparar los datos
-    // for (var i = 0; i < datos.length; i++)
-    // {
-    //     serie.push({x: datos[i].datetime, y: datos[i].rain_mm, name: datos[i].datetime});
-    // }
-
-    // HomeCharts._graficos.graficoLinea(elementoSelector, serie, '', 'Precipitacion');
-
-    var datos = HomeCharts.cargarDatosSincrono('/precipitacion/acumulado_dia/' + Dashboard._idEstacion, HomeCharts._fechaInicio, HomeCharts._fechaDiezDiasFin);
+    var datos = HomeCharts.cargarDatosSincrono('/precipitacion/acumulado_dia/' + Dashboard._idEstacion, HomeCharts._fechaDiezDiasInicio, HomeCharts._fechaFin);
 
     HomeCharts._graficos.graficoBarra(elementoSelector, datos['dias'], datos['valores'], 'Precipitacion Acumulada por dia', 'Lluvia (mm)');
-
 };
 
 
@@ -423,9 +476,9 @@ Dashboard.inicializar = function()
     Dashboard._idEstacion = 1;
     Dashboard.temperaturaTabListener();
 
-     //HomeCharts._fechaFin = '2014-11-14';
-     //HomeCharts._fechaInicio = '2014-11-25';
-     //HomeCharts._fechaDiezDiasFin = '2014-11-22';
+    //HomeCharts._fechaFin = '2014-11-14';
+    //HomeCharts._fechaInicio = '2014-11-25';
+    //HomeCharts._fechaDiezDiasInicio = '2014-11-22';
 };
 
 Dashboard.temperaturaTabListener = function()
@@ -461,87 +514,99 @@ Dashboard.temperaturaTabListener = function()
             HomeCharts.precipitacionHistorico("#rainfall-tab1");
         }
     });
+};
 
+Reporte = {
+    generarReporte : null
+};
 
+Reporte.generarReporte = function()
+{
+    var estaciones = [];
 
+    jQuery('#select-estacion li a').each(function(){
+        if (!jQuery(this).hasClass('select-all') && jQuery(this).hasClass('selected'))
+            estaciones.push(jQuery(this).attr('id'));
+    });
 
+    var campos = [];
 
-    /*jQuery("#btnGrafTemp").click(function(){
-        // es el valor antes de terminar la transicion por lo que todavia no se ve
-        if (jQuery('#collapse-temperature').is(':hidden'))
+    jQuery('#select-medicion li a').each(function(){
+        if (!jQuery(this).hasClass('select-all')  && jQuery(this).hasClass('selected'))
+            campos.push(jQuery(this).attr('id'));
+    });
+
+    var informe = jQuery('#select-informe li a.selected').attr('id');
+
+    var intervalo_desde = jQuery('#select-intervalo li a.selected').attr('data-desde');
+    var intervalo_hasta = jQuery('#select-intervalo li a.selected').attr('data-hasta');
+
+    var data = {'rep_estaciones' : estaciones.join(','), 'rep_atributos' : campos.join(','), 'rep_informe' : informe, 'rep_desde' : intervalo_desde, 'rep_hasta' : intervalo_hasta};
+
+    console.log(data);
+
+    jQuery.ajax({
+        url : '/reporte/generar',
+        type : "POST",
+        data : data,
+        async : true,
+        dataType : "json",
+        success : function (response)
         {
-            HomeCharts.temperaturaHistorico("#temp-tab1");
+            //$('#tablent-report').removeClass('hidden');
+            jQuery('#tabla-report-container').html(response.data);
         }
     });
 
-    jQuery("#btnGrafTemp").click(function(){
-        // es el valor antes de terminar la transicion por lo que todavia no se ve
-        if (jQuery('#collapse-temperature').is(':hidden'))
-        {
-            HomeCharts.temperaturaHistorico("#temp-tab1");
-        }
-    });*/
-};
+}
 
+function pronos()
+{
+    var filas = jQuery('#climaContent').find('table tr');
+    var pronoFecha = jQuery('#climaContent').find('div.Estilo8').text();
+    var dia = jQuery(jQuery(filas.get(3)).find('td').get(0)).text();
+    var icono = jQuery(jQuery(filas.get(4)).find('td').get(0)).find('div').html();
+    var pronostico = jQuery(jQuery(filas.get(5)).find('td').get(0)).find('div span').html();
+    var temperaturas = jQuery(jQuery(filas.get(6)).find('td').get(0)).find('strong');
+    var minima = jQuery(temperaturas.get(0)).text();
+    var maxima = jQuery(temperaturas.get(1)).text();
 
-// getValores.json
-//  {"fecha":"2014-11-05","hora":"11:10:00","vientoInt":"3.1","vientoDir":"152","vientoMax":"3.8","vientoMaxHora":"01:50:00","vientoMaxDir":"180","precipitacion":null,"precipitacionDia":null,"precipitacionMes":"18.2000000700355","precipitacionAnho":"1892.30000220984","humedad":"68","tempSuelo":"22.8","tempAire":"18.2","tempMin":"14.1","tempMinHora":"07:40:00","tempMax":"19.5","tempMaxHora":"00:00:00","presionAtm":"1000","radiacion":"398","vientoPreDir":"SSE","vientoPreCount":"38"}
+    icono = jQuery(icono).attr('src', 'http://www.meteorologia.gov.py/' + jQuery(icono).attr('src')).attr('title', pronostico);
 
-// http://meteo.uni.edu.py/api.php?f=getMeteoData&tipo=tempAire&desde=2014-10-06&hasta=2014-11-05
-// {"fecha":"2014-10-27","hora":"14:30:00","data":"34.6"},
+    jQuery('#pronosDate').html(pronoFecha);
+    jQuery('#cellDia1').html(dia);
+    jQuery('#cellIcono1').html(icono);
+    jQuery('#cellMinima1').html( minima);
+    jQuery('#cellMaxima1').html( maxima);
 
-// ultima lectura registrada en la estacion
-//Lecturas Obtenidas el 2014-11-05 a las 11:20:00 UTC / 08:20:00 GMT-0300 (PYST)
+    dia = jQuery(jQuery(filas.get(3)).find('td').get(2)).text();
+    icono = jQuery(jQuery(filas.get(4)).find('td').get(2)).find('div').html();
+    pronostico = jQuery(jQuery(filas.get(5)).find('td').get(2)).find('div span').html();
+    temperaturas = jQuery(jQuery(filas.get(6)).find('td').get(2)).find('strong');
+    minima = jQuery(temperaturas.get(0)).text();
+    maxima = jQuery(temperaturas.get(1)).text();
 
+    icono = jQuery(icono).attr('src', 'http://www.meteorologia.gov.py/' + jQuery(icono).attr('src')).attr('title', pronostico);
 
-function pronos(){
+    jQuery('#cellDia2').html(dia);
+    jQuery('#cellIcono2').html(icono);
+    jQuery('#cellMinima2').html(minima);
+    jQuery('#cellMaxima2').html(maxima);
 
-        var filas = jQuery('#climaContent').find('table tr');
-        var pronoFecha = jQuery('#climaContent').find('div.Estilo8').text();
-        var dia = jQuery(jQuery(filas.get(3)).find('td').get(0)).text();
-        var icono = jQuery(jQuery(filas.get(4)).find('td').get(0)).find('div').html();
-        var pronostico = jQuery(jQuery(filas.get(5)).find('td').get(0)).find('div span').html();
-        var temperaturas = jQuery(jQuery(filas.get(6)).find('td').get(0)).find('strong');
-        var minima = jQuery(temperaturas.get(0)).text();
-        var maxima = jQuery(temperaturas.get(1)).text();
+    dia = jQuery(jQuery(filas.get(3)).find('td').get(4)).text();
+    icono = jQuery(jQuery(filas.get(4)).find('td').get(4)).find('div').html();
+    pronostico = jQuery(jQuery(filas.get(5)).find('td').get(4)).find('div span').html();
+    temperaturas = jQuery(jQuery(filas.get(6)).find('td').get(4)).find('strong');
+    minima = jQuery(temperaturas.get(0)).text();
+    maxima = jQuery(temperaturas.get(1)).text();
 
-        icono = jQuery(icono).attr('src', 'http://www.meteorologia.gov.py/' + jQuery(icono).attr('src')).attr('title', pronostico);
+    icono = jQuery(icono).attr('src', 'http://www.meteorologia.gov.py/' + jQuery(icono).attr('src')).attr('title', pronostico);
 
-        jQuery('#pronosDate').html(pronoFecha);
-        jQuery('#cellDia1').html(dia);
-        jQuery('#cellIcono1').html(icono);
-        jQuery('#cellMinima1').html( minima);
-        jQuery('#cellMaxima1').html( maxima);
-
-        dia = jQuery(jQuery(filas.get(3)).find('td').get(2)).text();
-        icono = jQuery(jQuery(filas.get(4)).find('td').get(2)).find('div').html();
-        pronostico = jQuery(jQuery(filas.get(5)).find('td').get(2)).find('div span').html();
-        temperaturas = jQuery(jQuery(filas.get(6)).find('td').get(2)).find('strong');
-        minima = jQuery(temperaturas.get(0)).text();
-        maxima = jQuery(temperaturas.get(1)).text();
-
-        icono = jQuery(icono).attr('src', 'http://www.meteorologia.gov.py/' + jQuery(icono).attr('src')).attr('title', pronostico);
-
-        jQuery('#cellDia2').html(dia);
-        jQuery('#cellIcono2').html(icono);
-        jQuery('#cellMinima2').html(minima);
-        jQuery('#cellMaxima2').html(maxima);
-
-        dia = jQuery(jQuery(filas.get(3)).find('td').get(4)).text();
-        icono = jQuery(jQuery(filas.get(4)).find('td').get(4)).find('div').html();
-        pronostico = jQuery(jQuery(filas.get(5)).find('td').get(4)).find('div span').html();
-        temperaturas = jQuery(jQuery(filas.get(6)).find('td').get(4)).find('strong');
-        minima = jQuery(temperaturas.get(0)).text();
-        maxima = jQuery(temperaturas.get(1)).text();
-
-        icono = jQuery(icono).attr('src', 'http://www.meteorologia.gov.py/' + jQuery(icono).attr('src')).attr('title', pronostico);
-
-        jQuery('#cellDia3').html(dia);
-        jQuery('#cellIcono3').html(icono);
-        jQuery('#cellMinima3').html(minima);
-        jQuery('#cellMaxima3').html(maxima);
-        jQuery('#pronostico').show();
-
+    jQuery('#cellDia3').html(dia);
+    jQuery('#cellIcono3').html(icono);
+    jQuery('#cellMinima3').html(minima);
+    jQuery('#cellMaxima3').html(maxima);
+    jQuery('#pronostico').show();
 }
 
 

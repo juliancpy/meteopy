@@ -1,0 +1,296 @@
+{% extends "base.html" %}
+{% block content %}
+
+<main role="main">
+
+<header class="header-secondary">
+    <h2 class="page-title">Reportes</h2>
+</header><!-- header-secondary end -->
+
+
+
+<div class="row">
+    <div class="col-xs-12 pad2" style="z-index:15">
+        <div class="panel panel-dark">
+            <div class="panel-head">
+
+                <ul class="nav nav-pills" id="filter-report">
+                    <li class="active">
+                        <a href="#select-estacion" data-toggle="tab">
+                            <i class="flaticon-media19"></i>
+                            Estación
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="#select-informe" data-toggle="">
+                            <i class="fa fa-calendar"></i>
+                            Informe
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="#select-medicion" data-toggle="">
+                            <i class="flaticon-barometer2"></i>
+                            Medición
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="#select-intervalo" data-toggle="">
+                            <i class="fa fa-clock-o"></i>
+                            Intervalo de Tiempo
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="#select-visualizacion" data-toggle="">
+                            <i class="fa fa-file-o"></i>
+                            Visualización
+                        </a>
+                    </li>
+                </ul><!-- filter-report end -->
+
+
+
+                <ul class="nav nav-pills" id="filter-report-info">
+                    <li class="info-estacion"></li>
+                    <li class="info-informe"></li>
+                    <li class="info-medicion"></li>
+                    <li class="info-intervalo"></li>
+                    <li class="info-visualizacion"></li>
+                </ul><!-- filter-report end -->
+            </div><!-- panel-head end -->
+
+
+            <div class="panel-body pad2">
+
+                <div id="filter-report-content" class="tab-content">
+                    <div class="tab-pane tab-multiselect fade active in" id="select-estacion"><div class="col-sm-10">
+    <div class="row">
+        <div class="col-sm-3">
+            <div class="row">
+                <ul class="nav nav-pills nav-stacked">
+                    <li><a href="#" id="select-all" class="select-all" data-info="estacion"><span><span class="fa fa-check"></span> Todas</span></a></li>
+
+                    {%  for station in stations %}
+                        <li><a href="#" id="{{ station.id  }}" data-info="estacion"><span><span class="fa fa-check"></span> {{ station.name }}</span></a></li>
+                    {% endfor %}
+
+                </ul>
+            </div><!-- row end -->
+        </div><!-- col end -->
+
+    </div><!-- row end -->
+</div><!-- col end -->
+
+
+<div class="next-container col-xs-2">
+    <a class="btn btn-primary btn-next btn-sm">SIGUIENTE <span class="fa fa-angle-right"></span></a>
+</div><!-- col end -->
+
+
+
+
+
+
+</div>
+                    <div class="tab-pane fade" id="select-informe">
+<div class="row">
+    <div class="col-sm-3">
+        <ul class="nav nav-pills nav-stacked">
+            <li><a href="#" id="all" data-info="informe"><span><span class="fa fa-check"></span> Todas (15min )</span></a></li>
+
+        </ul>
+    </div><!-- col end -->
+
+
+    <div class="col-sm-3">
+        <ul class="nav nav-pills nav-stacked">
+            <li><a href="#" id="dia" data-info="informe"><span><span class="fa fa-check"></span> Promedio / Día</span></a></li>
+        </ul>
+    </div><!-- col end -->
+
+    <div class="col-sm-3">
+        <ul class="nav nav-pills nav-stacked">
+            <li><a href="#" id="hora" data-info="informe"><span><span class="fa fa-check"></span> Promedio / Hora</span></a></li>
+        </ul>
+    </div><!-- col end -->
+
+
+    <div class="col-sm-3">
+        <ul class="nav nav-pills nav-stacked">
+            <li><a href="#" id="mes" data-info="informe"><span><span class="fa fa-check"></span> Promedio / Mes</span></a></li>
+        </ul>
+    </div><!-- col end -->
+
+</div><!-- row end -->
+
+
+
+
+
+
+
+
+
+</div>
+                    <div class="tab-pane tab-multiselect fade" id="select-medicion">
+
+<div class="col-sm-10">
+    <div class="row">
+        <div class="btn-group-vertical col-sm-3">
+            <ul class="nav nav-pills nav-stacked">
+                <li><a href="#" id="select-all" class="select-all" data-info="medicion"><span><span class="fa fa-check"></span> Todas</span></a></li>
+                <li><a href="#" id="winddir" data-info="medicion"><span><span class="fa fa-check"></span> Dirección del Viento</span></a></li>
+                <li><a href="#" id="et" data-info="medicion"><span><span class="fa fa-check"></span> Radiación Solar</span></a></li>
+            </ul>
+        </div><!-- col end -->
+
+
+        <div class="col-sm-3">
+            <ul class="nav nav-pills nav-stacked">
+                <li><a href="#" id="outhumidity" data-info="medicion"><span><span class="fa fa-check"></span> Humedad</span></a></li>
+                <li><a href="#" id="rain" data-info="medicion"><span><span class="fa fa-check"></span> Lluvia</span></a></li>
+                <li><a href="#" id="barometer" data-info="medicion"><span><span class="fa fa-check"></span> Barometro</span></a></li>
+            </ul>
+        </div><!-- col end -->
+
+        <div class="col-sm-3">
+            <ul class="nav nav-pills nav-stacked">
+                <li><a href="#" id="outtemp" data-info="medicion"><span><span class="fa fa-check"></span> Temperatura</span></a></li>
+                <li><a href="#" id="heatindex" data-info="medicion"><span><span class="fa fa-check"></span> Sensación Térmica</span></a></li>
+                <!-- <li><a href="#" id="soiltemp1" data-info="medicion"><span><span class="fa fa-check"></span> Max. Viento</span></a></li> -->
+            </ul>
+        </div><!-- col end -->
+
+        <div class="col-sm-3">
+            <ul class="nav nav-pills nav-stacked">
+                <li><a href="#" id="et" data-info="medicion"><span><span class="fa fa-check"></span> Punto de Rocío</span></a></li>
+                <li><a href="#" id="et" data-info="medicion"><span><span class="fa fa-check"></span> ET</span></a></li>
+                <li><a href="#" id="heatindex" data-info="medicion"><span><span class="fa fa-check"></span> Indice de Calor</span></a></li>
+                <li><a href="#" id="uv" data-info="medicion"><span><span class="fa fa-check"></span> Ultravioleta</span></a></li>
+            </ul>
+        </div><!-- col end -->
+    </div><!-- row end -->
+</div><!-- col end -->
+
+
+<div class="next-container col-xs-2">
+    <a class="btn btn-primary btn-next btn-sm">SIGUIENTE <span class="fa fa-angle-right"></span></a>
+</div><!-- col end -->
+
+
+
+
+
+</div>
+                    <div class="tab-pane fade" id="select-intervalo">
+
+<div class="row">
+    <div class="btn-group-vertical col-sm-3">
+        <ul class="nav nav-pills nav-stacked">
+            <li><a href="#" data-desde="2014-11-17" data-hasta="2014-11-17" data-info="intervalo"><span><span class="fa fa-check"></span> Hoy</span></a></li>
+            <li><a href="#" data-desde="2014-11-10" data-hasta="2014-11-17" data-info="intervalo"><span><span class="fa fa-check"></span> 7 Días</span></a></li>
+            <li><a href="#" data-desde="2014-10-17" data-hasta="2014-11-17" data-info="intervalo"><span><span class="fa fa-check"></span> 30 Días</span></a></li>
+        </ul>
+    </div><!-- col end -->
+
+
+    <div class="col-sm-3">
+        <ul class="nav nav-pills nav-stacked">
+            <li><a href="#" data-desde="2014-11-14" data-hasta="2014-11-17" data-info="intervalo"><span><span class="fa fa-check"></span> 3 Días</span></a></li>
+            <li><a href="#" data-desde="2014-11-03" data-hasta="2014-11-17" data-info="intervalo"><span><span class="fa fa-check"></span> 14 Días</span></a></li>
+            <li><a href="#" data-desde="2014-09-17" data-hasta="2014-11-17" data-info="intervalo"><span><span class="fa fa-check"></span> 60 Días</span></a></li>
+        </ul>
+    </div><!-- col end -->
+
+
+    <div class="col-sm-6">
+        <div class="form-group">
+            <span>Intervalo</span>
+        </div><!-- form-group end -->
+
+        <div class="form-group row">
+            <label class="col-sm-12">De:</label>
+            <div class="col-sm-6">
+                <input type="text" class="form-control" id="intervalo_de">
+            </div><!-- col end -->
+        </div><!-- form-group end -->
+
+        <div class="form-group row">
+            <label class="col-sm-12">Hasta:</label>
+            <div class="col-sm-6">
+                <input type="text" class="form-control" id="intervalo_hasta">
+            </div><!-- col end -->
+        </div><!-- form-group end -->
+
+    </div><!-- col end -->
+</div><!-- row end -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+                    <div class="tab-pane fade" id="select-visualizacion">
+<div class="row">
+    <div class="btn-group-vertical col-sm-3">
+        <ul class="nav nav-pills nav-stacked">
+            <li><a href="#" data-info="visualizacion"><span><span class="fa fa-check"></span> Visualizar Gráfico</span></a></li>
+        </ul>
+    </div><!-- col end -->
+
+
+    <div class="btn-group-vertical col-sm-3">
+        <ul class="nav nav-pills nav-stacked">
+            <li><a href="#" data-info="visualizacion"><span><span class="fa fa-check"></span> Tabla</span></a></li>
+        </ul>
+    </div><!-- col end -->
+
+
+    <div class="btn-group-vertical col-sm-3">
+        <ul class="nav nav-pills nav-stacked">
+            <li><a href="#" data-info="visualizacion"><span><span class="fa fa-check"></span> CSV</span></a></li>
+        </ul>
+    </div><!-- col end -->
+
+
+    <div class="btn-group-vertical col-sm-3">
+        <ul class="nav nav-pills nav-stacked">
+            <li><a href="#" data-info="visualizacion"><span><span class="fa fa-check"></span> PDF</span></a></li>
+        </ul>
+    </div><!-- col end -->
+</div><!-- row end -->
+
+
+
+
+
+
+
+
+
+</div>
+                </div><!-- tab-content end -->
+
+            </div><!-- panel-body end -->
+        </div><!-- panel end -->
+
+    </div><!-- col end -->
+
+
+
+    <div class="col-xs-12" id="tabla-report-container">
+
+    </div><!-- col end -->
+
+{% endblock %}

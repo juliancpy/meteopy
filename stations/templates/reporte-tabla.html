@@ -1,0 +1,28 @@
+{% if datos %}
+
+    <table id="tablent-report" class="table">
+        <thead>
+            <tr>
+                {% for titulo in titulos %}
+                    <th><div>{{ titulo }}</div></th>
+                {% endfor %}
+            </tr>
+        </thead>
+
+        <tbody>
+
+            {% for fila in datos %}
+                <tr>
+                    {% for campo in fila %}
+                        <td><div>{{ campo }}</div></td>
+                    {% endfor %}
+                </tr>
+            {% endfor %}
+
+        </tbody>
+    </table>
+
+{% else %}
+    <p>No hay datos para mostrar</p>
+{% endif %}
+

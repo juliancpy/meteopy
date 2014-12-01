@@ -21,6 +21,9 @@ urlpatterns = patterns('',
     url(r'^viento/conteo_direccion/(?P<id_estacion>\d+)/', 'stations.views.viento_conteo_direccion'),
     url(r'^detalles/(?P<id_estacion>\d+)/', 'stations.views.details_view', name='detalles'),
     url(r'^detalles/$', 'stations.views.details_view', name='detalles'),
+    url(r'^reporte/$', 'stations.views.reporte', name='reporte'),
+    url(r'^reporte/generar$', 'stations.views.reporte_generar', name='reporte_generar'),
+    url(r'^reporte/generar/csv$', 'stations.views.reporte_generar_csv', name='reporte_generar_csv'),
 
 #    url(r'^chart/$', 'stations.views.temp_home_chart_view', name='temp_home_chart_view'),
 )
