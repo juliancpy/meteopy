@@ -78,7 +78,7 @@
 			<tbody>
 				<tr>
 					<td><div><i class="ico temperatura ico-left"></i> Temperatura</div></td>
-					<td><div>{{ data.outtemp_celsius | floatformat:"2" }}ºC</div></td>
+					<td><div>{{ data.outtemp | floatformat:"2" }}ºC</div></td>
 				</tr>
 
 				<tr>
@@ -93,7 +93,7 @@
 
 				<tr>
 					<td><div><i class="ico viento ico-left"></i> Viento</div></td>
-					<td><div>{{ data.windspeed_kmh|floatformat:"2" }} Km/h</div></td>
+					<td><div>{{ data.windspeed |floatformat:"2" }} Km/h</div></td>
 				</tr>
 
 				<tr>
@@ -103,7 +103,7 @@
 
 				<tr>
 					<td><div><i class="ico lluvia ico-left"></i> Lluvia</div></td>
-					<td><div>{{ data.rain_mm | floatformat:"1" }} mm</div></td>
+					<td><div>{{ data.rain | floatformat:"1" }} mm</div></td>
 				</tr>
 
 				<tr>
@@ -113,7 +113,7 @@
 
 				<tr>
 					<td><div><i class="ico barometro ico-left"></i> Barometro</div></td>
-					<td><div>{{ data.pressure_hpa | floatformat:"2" }}hpa</div></td>
+					<td><div>{{ data.pressure | floatformat:"2" }}hpa</div></td>
 				</tr>
 			</tbody>
 		</table>
@@ -131,14 +131,14 @@
 			<tbody>
 				<tr>
 					<td><div><i class="ico temperatura-max ico-left"></i> Temperatura Máxima</div></td>
-					<td><div>{{ extra.outtemp_max.outtemp_celsius|floatformat:"2" }} ºC</div></td>
+					<td><div>{{ extra.outtemp_max.outtemp|floatformat:"2" }} ºC</div></td>
 					<td><div>{{ extra.outtemp_max.datetime | date:"H:m" }}</div></td>
 				</tr>
 
 				<tr>
 					<td><div><i class="ico temperatura-min ico-left"></i> Temperatura Mínima</div></td>
-					<td><div>{{ extra.outtemp_min.outtemp_celsius| floatformat:"2" }} ºC</div></td>
-					<td><div>{{ extra.outtemp_min.datetime|date:"H:m" }}</div></td>
+					<td><div>{{ extra.outtemp_min.outtemp | floatformat:"2" }} ºC</div></td>
+					<td><div>{{ extra.outtemp_min.datetime |date:"H:m" }}</div></td>
 				</tr>
 
 				<tr>

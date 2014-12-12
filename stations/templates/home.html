@@ -39,13 +39,13 @@
 				</div><!-- col end -->
 
 				<div class="col-xs-2">
-					<div><h4>{{ last_data.outtemp_celsius | floatformat:"1" }}º C</h4></div>
+					<div><h4>{{ last_data.outtemp | floatformat:"1" }}º C</h4></div>
 				</div><!-- col end -->
 
 				<div class="col-xs-6">
 					<div>
-						<small>MIN:</small> {{ extra.outtemp_min.outtemp_celsius | floatformat:"1"}} ºC &nbsp;-&nbsp; <i class="fa fa-clock-o"></i> {{ extra.outtemp_min.datetime|date:'H:i' }} <br/>
-						<small>MAX:</small> {{ extra.outtemp_max.outtemp_celsius | floatformat:"1"}} ºC &nbsp;-&nbsp; <i class="fa fa-clock-o"></i> {{ extra.outtemp_max.datetime|date:'H:i' }}
+						<small>MIN:</small> {{ extra.outtemp_min.outtemp | floatformat:"1"}} ºC &nbsp;-&nbsp; <i class="fa fa-clock-o"></i> {{ extra.outtemp_min.datetime|date:'H:i' }} <br/>
+						<small>MAX:</small> {{ extra.outtemp_max.outtemp | floatformat:"1"}} ºC &nbsp;-&nbsp; <i class="fa fa-clock-o"></i> {{ extra.outtemp_max.datetime|date:'H:i' }}
 					</div>
                         <br>
 				</div><!-- col end -->
@@ -61,14 +61,10 @@
 			<div class="panel-collapse collapse" id="collapse-temperature">
 				<ul role="tablist" class="nav nav-tabs">
 		      <li class="active"><a data-toggle="tab" role="tab" href="#temp-tab1">Temperatura</a></li>
-		      <li><a data-toggle="tab" role="tab" href="#temp-tab2" >Temp / Precipitaciones</a></li>
 		    </ul>
 
 				<div class="tab-content">
 				  <div id="temp-tab1" class="tab-pane fade in active" style="min-width: 521px; height: 400px; margin: 0 auto">
-
-				  </div><!-- tab-pane end -->
-				  <div class="tab-pane fade" id="temp-tab2" style="height: 400px; margin: auto; min-width: 511px; max-width: 521px">
 
 				  </div><!-- tab-pane end -->
 				</div><!-- tab-content end -->
@@ -88,12 +84,12 @@
 				</div><!-- col end -->
 
 				<div class="col-xs-2">
-					<div><h4>{{ last_data.windspeed_kmh | floatformat:"1"}} kmph</h4></div>
+					<div><h4>{{ last_data.windspeed | floatformat:"1"}} kmph</h4></div>
 				</div><!-- col end -->
 
 				<div class="col-xs-6">
 					<div>
-						<small>MAX:</small> {{ extra.windspeed_max.windspeed_kmh | floatformat:"1"}} kmph &nbsp;-&nbsp; <i class="fa fa-clock-o"></i> {{ extra.windspeed_max.datetime|date:'H:i' }} <br/>
+						<small>MAX:</small> {{ extra.windspeed_max.windspeed | floatformat:"1"}} kmph &nbsp;-&nbsp; <i class="fa fa-clock-o"></i> {{ extra.windspeed_max.datetime|date:'H:i' }} <br/>
 						<small>DIR:</small> {{ last_data.winddir }}º
 					</div>
 				</div><!-- col end -->
@@ -110,15 +106,11 @@
 			<div class="panel-collapse collapse" id="collapse-wind-speed">
 				<ul role="tablist" class="nav nav-tabs">
 		      <li class="active"><a data-toggle="tab" role="tab" href="#wind-speed-tab1">Velocidad</a></li>
-		      <li><a data-toggle="tab" role="tab" href="#wind-speed-tab2">Máximo</a></li>
 		    </ul>
 
 				<div class="tab-content">
 				  <div class="tab-pane fade in active" id="wind-speed-tab1" style="min-width: 521px; height: 400px; margin: 0 auto">
 
-				  </div><!-- tab-pane end -->
-				  <div class="tab-pane fade" id="wind-speed-tab2">
-					  Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et.
 				  </div><!-- tab-pane end -->
 				</div><!-- tab-content end -->
 			</div><!-- panel-collapse end -->
@@ -163,15 +155,11 @@
 			<div class="panel-collapse collapse" id="collapse-winddir">
 				<ul role="tablist" class="nav nav-tabs">
 		      <li class="active"><a data-toggle="tab" role="tab" href="#winddir-tab1">Dirección</a></li>
-		      <li><a data-toggle="tab" role="tab" href="#winddir-tab2">Predominante del Día</a></li>
 		    </ul>
 
 				<div class="tab-content">
 				  <div class="tab-pane fade in active" id="winddir-tab1" style="min-width: 521px; height: 400px; margin: 0 auto">
 
-				  </div><!-- tab-pane end -->
-				  <div class="tab-pane fade" id="winddir-tab2">
-					  Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et.
 				  </div><!-- tab-pane end -->
 				</div><!-- tab-content end -->
 			</div><!-- panel-collapse end -->
@@ -191,7 +179,7 @@
 				</div><!-- col end -->
 
 				<div class="col-xs-2">
-					<div><h4>{{ last_data.rain_mm | floatformat:"1"}}mm</h4></div>
+					<div><h4>{{ last_data.rain | floatformat:"1"}}mm</h4></div>
 				</div><!-- col end -->
 
 				<div class="col-xs-6">
@@ -238,7 +226,7 @@
 				<div class="col-xs-3 inline-item">
 					Presión<br/>
 					<i class="flaticon-barometer2"></i>
-					{{ last_data.pressure_hpa | floatformat:"2" }}hpa
+					{{ last_data.pressure | floatformat:"2" }}hpa
 				</div><!-- col end -->
 
 				<div class="col-xs-3 inline-item">
